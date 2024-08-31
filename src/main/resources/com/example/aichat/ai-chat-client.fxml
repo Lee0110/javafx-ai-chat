@@ -8,10 +8,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="com.example.aichat.AIChatController">
+<BorderPane prefHeight="734.0" prefWidth="758.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <!-- 顶部区域可以放清除聊天记录按钮 -->
     <top>
-        <Button text="清除聊天记录" onAction="#handleClearChat"/>
+        <Button onAction="#handleClearChat" prefWidth="186.0" text="清除聊天记录" />
     </top>
 
     <!-- 中间区域放聊天记录 -->
@@ -19,7 +19,7 @@
         <ScrollPane fx:id="scrollPane" fitToWidth="true">
             <VBox fx:id="chatBox" spacing="5">
                 <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
+                    <Insets bottom="10" left="10" right="10" top="10" />
                 </padding>
             </VBox>
         </ScrollPane>
@@ -29,10 +29,10 @@
     <bottom>
         <HBox spacing="5">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
-            <TextField fx:id="inputField" HBox.hgrow="ALWAYS"/>
-            <Button text="发送" onAction="#handleSend"/>
+            <TextField fx:id="inputField" prefHeight="91.0" prefWidth="498.0" HBox.hgrow="ALWAYS" />
+            <Button onAction="#handleSend" text="发送" />
         </HBox>
     </bottom>
 </BorderPane>
