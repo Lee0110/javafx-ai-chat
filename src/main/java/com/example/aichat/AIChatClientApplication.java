@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.kordamp.bootstrapfx.BootstrapFX;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -35,6 +36,7 @@ public class AIChatClientApplication extends Application {
         FXMLLoader loader = new FXMLLoader(AIChatClientApplication.class.getResource("ai-chat-client.fxml"));
         loader.setController(controller);
         Scene scene = new Scene(loader.load());
+        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
 
         primaryStage.setTitle("Chat Client");
         primaryStage.setScene(scene);

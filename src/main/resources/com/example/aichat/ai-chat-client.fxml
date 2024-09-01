@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-
 <BorderPane prefHeight="734.0" prefWidth="758.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-    <!-- 顶部区域可以放清除聊天记录按钮 -->
+    <!-- 顶部区域 -->
     <top>
-        <Button onAction="#handleClearChat" prefWidth="186.0" text="清除聊天记录" />
+        <MenuBar styleClass="navbar navbar-default">
+            <Menu text="选项" styleClass="nav-item">
+                <MenuItem text="设置" onAction="#handleOpenSettings" styleClass="nav-link"/>
+                <MenuItem text="清除聊天记录" onAction="#handleClearChat" styleClass="nav-link"/>
+                <MenuItem text="导出聊天记录" onAction="#handleExportChat" styleClass="nav-link"/>
+                <MenuItem text="关于" onAction="#handleOpenAbout" styleClass="nav-link"/>
+            </Menu>
+        </MenuBar>
     </top>
 
     <!-- 中间区域放聊天记录 -->
     <center>
-        <ScrollPane fx:id="scrollPane" fitToWidth="true">
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" style="-fx-background-image: url('img/background.jpg'); -fx-background-size: cover;">
             <VBox fx:id="chatBox" spacing="5">
                 <padding>
-                    <Insets bottom="10" left="10" right="10" top="10" />
+                    <Insets bottom="10" left="10" right="10" top="10"/>
                 </padding>
             </VBox>
         </ScrollPane>
@@ -29,10 +33,10 @@
     <bottom>
         <HBox spacing="5">
             <padding>
-                <Insets bottom="10" left="10" right="10" top="10" />
+                <Insets bottom="10" left="10" right="10" top="10"/>
             </padding>
-            <TextField fx:id="inputField" prefHeight="91.0" prefWidth="498.0" HBox.hgrow="ALWAYS" />
-            <Button onAction="#handleSend" text="发送" />
+            <TextArea fx:id="inputField" prefHeight="91.0" prefWidth="498.0" wrapText="true" HBox.hgrow="ALWAYS" styleClass="form-control"/>
+            <Button onAction="#handleSend" text="发送" styleClass="btn-primary"/>
         </HBox>
     </bottom>
 </BorderPane>
