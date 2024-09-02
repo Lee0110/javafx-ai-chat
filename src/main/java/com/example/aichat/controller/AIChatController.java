@@ -9,7 +9,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import org.springframework.ai.chat.model.ChatModel;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -17,6 +18,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 @Component
+@Slf4j
 public class AIChatController implements Initializable {
     @FXML
     private TextArea inputField;
@@ -27,10 +29,10 @@ public class AIChatController implements Initializable {
     @FXML
     private ScrollPane scrollPane;
 
-    private final ChatModel chatModel;
+    private final ChatClient chatClient;
 
-    public AIChatController(ChatModel chatModel) {
-        this.chatModel = chatModel;
+    public AIChatController(ChatClient chatClient) {
+        this.chatClient = chatClient;
     }
 
     @Override
@@ -41,10 +43,18 @@ public class AIChatController implements Initializable {
         scrollPane.setBackground(new Background(background));
     }
 
-    // 模拟的聊天回复方法
     private String chat(String input) {
-        // 这里应该是你实现好的聊天回复逻辑
-        return chatModel.call(input);
+        long start = System.currentTimeMillis();
+        log.info("开始对话，用户输入：{}", input);
+        String reply;
+        try {
+            reply = chatClient.prompt().user(input).call().content();
+            log.info("对话生成完毕，耗时：{}ms", System.currentTimeMillis() - start);
+        } catch (Exception e) {
+            log.error("对话出错", e);
+            reply = "对话出错，请稍后再试";
+        }
+        return reply;
     }
 
     @FXML
@@ -115,7 +125,6 @@ public class AIChatController implements Initializable {
         }
 
         chatBox.getChildren().add(messageBox);
-
         // 滚动到最底部
         scrollPane.layout();
         scrollPane.setVvalue(1.0);
