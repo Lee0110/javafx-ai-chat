@@ -11,11 +11,17 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
+import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
 @Component
 @Slf4j
@@ -31,8 +37,14 @@ public class AIChatController implements Initializable {
 
     private final ChatClient chatClient;
 
-    public AIChatController(ChatClient chatClient) {
+    private final AtomicInteger chatId;
+
+    private final ChatMemory chatMemory;
+
+    public AIChatController(ChatClient chatClient, ChatMemory chatMemory) {
         this.chatClient = chatClient;
+        this.chatMemory = chatMemory;
+        this.chatId = new AtomicInteger(0);
     }
 
     @Override
@@ -46,9 +58,15 @@ public class AIChatController implements Initializable {
     private String chat(String input) {
         long start = System.currentTimeMillis();
         log.info("开始对话，用户输入：{}", input);
+        log.info("对话ID：{}", chatId.get());
+        log.info("对话内存：{}", chatMemory.get(String.valueOf(chatId.get()), 10));
         String reply;
         try {
-            reply = chatClient.prompt().user(input).call().content();
+            ChatResponse chatResponse = chatClient.prompt().user(input).advisors(a -> a
+                .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId.getAndIncrement())
+                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 100)).call().chatResponse();
+            log.info("对话结束：{}", chatResponse);
+            reply = chatResponse.getResult().getOutput().getContent();
             log.info("对话生成完毕，耗时：{}ms", System.currentTimeMillis() - start);
         } catch (Exception e) {
             log.error("对话出错", e);
