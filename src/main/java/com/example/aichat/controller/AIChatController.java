@@ -15,7 +15,11 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -41,10 +45,15 @@ public class AIChatController implements Initializable {
 
     private final ChatMemory chatMemory;
 
+    private final List<String> chatConversationIdList;
+
+    public static final int DEFAULT_CHAT_MEMORY_RESPONSE_SIZE = 20;
+
     public AIChatController(ChatClient chatClient, ChatMemory chatMemory) {
         this.chatClient = chatClient;
         this.chatMemory = chatMemory;
         this.chatId = new AtomicInteger(0);
+        this.chatConversationIdList = new ArrayList<>();
     }
 
     @Override
@@ -57,17 +66,17 @@ public class AIChatController implements Initializable {
 
     private String chat(String input) {
         long start = System.currentTimeMillis();
-        log.info("开始对话，用户输入：{}", input);
-        log.info("对话ID：{}", chatId.get());
-        log.info("对话内存：{}", chatMemory.get(String.valueOf(chatId.get()), 10));
+        log.info("开始对话，对话id：{}，用户输入：{}", chatId, input);
         String reply;
         try {
             ChatResponse chatResponse = chatClient.prompt().user(input).advisors(a -> a
-                .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId.getAndIncrement())
-                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 100)).call().chatResponse();
-            log.info("对话结束：{}", chatResponse);
-            reply = chatResponse.getResult().getOutput().getContent();
-            log.info("对话生成完毕，耗时：{}ms", System.currentTimeMillis() - start);
+                .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, DEFAULT_CHAT_MEMORY_RESPONSE_SIZE)).call().chatResponse();
+            log.info("对话结束，详细信息：{}", chatResponse);
+            BigDecimal time = new BigDecimal(System.currentTimeMillis() - start).divide(new BigDecimal(1000), 1, RoundingMode.HALF_UP);
+            reply = chatResponse.getResult().getOutput().getContent() + "\n" + "耗时：" + time + "秒";
+            chatConversationIdList.add(String.valueOf(chatId.getAndIncrement()));
+            log.info("对话生成完毕，耗时：{}秒", time);
         } catch (Exception e) {
             log.error("对话出错", e);
             reply = "对话出错，请稍后再试";
@@ -94,6 +103,12 @@ public class AIChatController implements Initializable {
     @FXML
     private void handleClearChat() {
         chatBox.getChildren().clear();
+        clearChatMemory();
+    }
+
+    private synchronized void clearChatMemory() {
+        chatConversationIdList.forEach(chatMemory::clear);
+        chatConversationIdList.clear();
     }
 
     @FXML
