@@ -48,15 +48,12 @@ public class AIChatController implements Initializable {
 
     private final ChatMemory chatMemory;
 
-    private final List<String> chatConversationIdList;
-
     public static final int DEFAULT_CHAT_MEMORY_RESPONSE_SIZE = 20;
 
     public AIChatController(ChatClient chatClient, ChatMemory chatMemory) {
         this.chatClient = chatClient;
         this.chatMemory = chatMemory;
         this.chatId = new AtomicInteger(0);
-        this.chatConversationIdList = new ArrayList<>();
     }
 
     @Override
@@ -78,7 +75,6 @@ public class AIChatController implements Initializable {
             log.info("对话结束，详细信息：{}", chatResponse);
             BigDecimal time = new BigDecimal(System.currentTimeMillis() - start).divide(new BigDecimal(1000), 1, RoundingMode.HALF_UP);
             reply = chatResponse.getResult().getOutput().getContent() + "\n" + "耗时：" + time + "秒";
-            chatConversationIdList.add(String.valueOf(chatId.getAndIncrement()));
             log.info("对话生成完毕，耗时：{}秒", time);
         } catch (Exception e) {
             log.error("对话出错", e);
@@ -106,12 +102,7 @@ public class AIChatController implements Initializable {
     @FXML
     private void handleClearChat() {
         chatBox.getChildren().clear();
-        clearChatMemory();
-    }
-
-    private synchronized void clearChatMemory() {
-        chatConversationIdList.forEach(chatMemory::clear);
-        chatConversationIdList.clear();
+        chatMemory.clear(String.valueOf(chatId.getAndIncrement()));
     }
 
     @FXML
