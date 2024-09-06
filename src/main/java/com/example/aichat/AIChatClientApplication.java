@@ -15,10 +15,6 @@ public class AIChatClientApplication extends Application {
 
     private ApplicationContext context;
 
-    public static void main(String[] args) {
-        launch();
-    }
-
     @Override
     public void init() {
         context = SpringApplication.run(AIChatClientApplication.class);

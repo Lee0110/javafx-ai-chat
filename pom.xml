@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>ai-chat</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>ai-chat</name>
 
     <properties>
@@ -102,11 +102,14 @@
                 <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <configuration>
-                            <mainClass>com.example.aichat/com.example.aichat.AIChatClientApplication</mainClass>
-                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <mainClass>com.example.aichat/com.example.aichat.Main</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
