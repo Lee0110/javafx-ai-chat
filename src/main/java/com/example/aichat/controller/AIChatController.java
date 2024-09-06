@@ -9,7 +9,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -28,8 +29,10 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
 @Component
-@Slf4j
 public class AIChatController implements Initializable {
+
+    private static final Logger log = LoggerFactory.getLogger(AIChatController.class);
+
     @FXML
     private TextArea inputField;
 

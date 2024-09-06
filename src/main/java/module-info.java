@@ -11,7 +11,6 @@ module com.example.aichat {
     requires spring.core;
     requires spring.boot.autoconfigure;
     requires spring.boot;
-  requires static lombok;
 
   // 向 javafx.fxml spring 模块开放
     opens com.example.aichat to javafx.fxml, spring.core, spring.beans, spring.context;
