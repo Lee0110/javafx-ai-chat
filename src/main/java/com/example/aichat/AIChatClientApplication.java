@@ -28,9 +28,7 @@ public class AIChatClientApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // 从Spring上下文中获取你的控制器或其他Bean
-        AIChatController controller = context.getBean(AIChatController.class);
         FXMLLoader loader = new FXMLLoader(AIChatClientApplication.class.getResource("ai-chat-client.fxml"));
-        loader.setController(controller);
         Scene scene = new Scene(loader.load());
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
 
