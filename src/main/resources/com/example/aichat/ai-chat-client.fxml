@@ -2,10 +2,10 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<BorderPane prefHeight="734.0" prefWidth="758.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.aichat.controller.AIChatController">
+<?import org.kordamp.bootstrapfx.scene.layout.Panel?>
+<Panel prefHeight="734.0" prefWidth="758.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.aichat.controller.AIChatController">
     <!-- 顶部区域 -->
     <top>
         <MenuBar styleClass="navbar navbar-default">
@@ -39,4 +39,4 @@
             <Button onAction="#handleSend" text="发送" styleClass="btn-primary"/>
         </HBox>
     </bottom>
-</BorderPane>
+</Panel>
