@@ -1,7 +1,9 @@
 package com.example.aichat.controller;
 
 import com.example.aichat.util.ChatUtil;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -17,10 +19,14 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 
 public class AIChatController implements Initializable {
 
     private static final Logger log = LoggerFactory.getLogger(AIChatController.class);
+
+    @FXML
+    public JFXButton sendButton;
 
     @FXML
     private JFXTextArea inputField;
@@ -30,6 +36,8 @@ public class AIChatController implements Initializable {
 
     @FXML
     private ScrollPane scrollPane;
+
+    @FXML
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -45,13 +53,10 @@ public class AIChatController implements Initializable {
         if (!inputText.isEmpty()) {
             // 显示用户输入的消息
             addMessage(inputText, Pos.BASELINE_RIGHT);
-
             // 获取回复消息并显示
-            String reply = ChatUtil.chat(inputText);
-            addMessage(reply, Pos.BASELINE_LEFT);
-
-            // 清空输入框
-            inputField.clear();
+            CompletableFuture
+                    .supplyAsync(() -> ChatUtil.chat(inputText))
+                    .thenAccept(reply -> Platform.runLater(() -> addMessage(reply, Pos.BASELINE_LEFT)));
         }
     }
 
@@ -100,16 +105,22 @@ public class AIChatController implements Initializable {
         messageLabel.setStyle("-fx-background-color: rgba(255, 255, 255, 0.5); -fx-padding: 10; -fx-background-radius: 10;");
         messageLabel.getStyleClass().add("alert alert-info");
 
-        // 根据消息类型设置布局
-        if (alignment == Pos.BASELINE_RIGHT) {
-            messageBox.getChildren().addAll(messageLabel, avatar);
-        } else {
-            messageBox.getChildren().addAll(avatar, messageLabel);
-        }
+        Platform.runLater(() -> {
+            // 根据消息类型设置布局
+            if (alignment == Pos.BASELINE_RIGHT) {
+                messageBox.getChildren().addAll(messageLabel, avatar);
+                // 清空输入框
+                inputField.clear();
+                sendButton.setDisable(true);
+            } else {
+                messageBox.getChildren().addAll(avatar, messageLabel);
+                sendButton.setDisable(false);
+            }
 
-        chatBox.getChildren().add(messageBox);
-        // 滚动到最底部
-        scrollPane.layout();
-        scrollPane.setVvalue(1.0);
+            chatBox.getChildren().add(messageBox);
+            // 滚动到最底部
+            scrollPane.layout();
+            scrollPane.setVvalue(1.0);
+        });
     }
 }

@@ -9,12 +9,12 @@
 <BorderPane prefHeight="734.0" prefWidth="758.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.aichat.controller.AIChatController">
     <!-- 顶部区域 -->
     <top>
-        <MenuBar styleClass="navbar navbar-default">
-            <Menu text="选项" styleClass="nav-item">
-                <MenuItem text="设置" onAction="#handleOpenSettings" styleClass="nav-link"/>
-                <MenuItem text="清除聊天记录" onAction="#handleClearChat" styleClass="nav-link"/>
-                <MenuItem text="导出聊天记录" onAction="#handleExportChat" styleClass="nav-link"/>
-                <MenuItem text="关于" onAction="#handleOpenAbout" styleClass="nav-link"/>
+        <MenuBar>
+            <Menu text="选项">
+                <MenuItem text="设置" onAction="#handleOpenSettings"/>
+                <MenuItem text="清除聊天记录" onAction="#handleClearChat"/>
+                <MenuItem text="导出聊天记录" onAction="#handleExportChat"/>
+                <MenuItem text="关于" onAction="#handleOpenAbout"/>
             </Menu>
         </MenuBar>
     </top>
@@ -36,8 +36,8 @@
             <padding>
                 <Insets bottom="10" left="10" right="10" top="10"/>
             </padding>
-            <JFXTextArea fx:id="inputField" prefHeight="91.0" prefWidth="498.0" wrapText="true" HBox.hgrow="ALWAYS" styleClass="form-control"/>
-            <JFXButton onAction="#handleSend" text="发送" prefWidth="100" prefHeight="40" buttonType="RAISED" style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
+            <JFXTextArea fx:id="inputField" prefHeight="91.0" prefWidth="498.0" wrapText="true" HBox.hgrow="ALWAYS"/>
+            <JFXButton fx:id="sendButton" onAction="#handleSend" text="发送" prefWidth="50" prefHeight="20" buttonType="RAISED" style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
         </HBox>
     </bottom>
 </BorderPane>
