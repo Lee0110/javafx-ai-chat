@@ -63,9 +63,9 @@
             <version>21</version>
         </dependency>
         <dependency>
-            <groupId>org.kordamp.bootstrapfx</groupId>
-            <artifactId>bootstrapfx-core</artifactId>
-            <version>0.4.0</version>
+            <groupId>com.jfoenix</groupId>
+            <artifactId>jfoenix</artifactId>
+            <version>9.0.10</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

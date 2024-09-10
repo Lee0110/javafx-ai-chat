@@ -4,8 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import org.kordamp.bootstrapfx.scene.layout.Panel?>
-<Panel prefHeight="734.0" prefWidth="758.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.aichat.controller.AIChatController">
+<?import javafx.scene.layout.BorderPane?>
+<?import com.jfoenix.controls.*?>
+<BorderPane prefHeight="734.0" prefWidth="758.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.aichat.controller.AIChatController">
     <!-- 顶部区域 -->
     <top>
         <MenuBar styleClass="navbar navbar-default">
@@ -20,7 +21,7 @@
 
     <!-- 中间区域放聊天记录 -->
     <center>
-        <ScrollPane fx:id="scrollPane" fitToWidth="true" style="-fx-background-image: url('img/background.jpg'); -fx-background-size: cover;">
+        <ScrollPane fx:id="scrollPane" fitToWidth="true">
             <VBox fx:id="chatBox" spacing="5">
                 <padding>
                     <Insets bottom="10" left="10" right="10" top="10"/>
@@ -36,7 +37,7 @@
                 <Insets bottom="10" left="10" right="10" top="10"/>
             </padding>
             <TextArea fx:id="inputField" prefHeight="91.0" prefWidth="498.0" wrapText="true" HBox.hgrow="ALWAYS" styleClass="form-control"/>
-            <Button onAction="#handleSend" text="发送" styleClass="btn-primary"/>
+            <JFXButton onAction="#handleSend" text="发送" prefWidth="100" prefHeight="40" buttonType="RAISED" style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
         </HBox>
     </bottom>
-</Panel>
+</BorderPane>

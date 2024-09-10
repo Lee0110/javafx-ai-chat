@@ -1,12 +1,9 @@
 package com.example.aichat;
 
-import com.example.aichat.controller.AIChatController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import org.kordamp.bootstrapfx.BootstrapFX;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -31,7 +28,6 @@ public class AIChatClientApplication extends Application {
         // 从Spring上下文中获取你的控制器或其他Bean
         FXMLLoader loader = new FXMLLoader(AIChatClientApplication.class.getResource("ai-chat-client.fxml"));
         Scene scene = new Scene(loader.load());
-        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
 
         primaryStage.setTitle("Chat Client");
         primaryStage.setScene(scene);

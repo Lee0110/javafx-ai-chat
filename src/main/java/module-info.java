@@ -1,7 +1,6 @@
 module com.example.aichat {
     requires javafx.controls;
     requires javafx.fxml;
-    requires org.kordamp.bootstrapfx.core;
     requires spring.context;
     requires spring.ai.core;
     requires spring.beans;
