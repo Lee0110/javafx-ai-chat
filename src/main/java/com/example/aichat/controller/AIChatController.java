@@ -1,6 +1,7 @@
 package com.example.aichat.controller;
 
 import com.example.aichat.util.ChatUtil;
+import com.jfoenix.controls.JFXTextArea;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -22,7 +23,7 @@ public class AIChatController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(AIChatController.class);
 
     @FXML
-    private TextArea inputField;
+    private JFXTextArea inputField;
 
     @FXML
     private VBox chatBox;

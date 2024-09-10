@@ -36,7 +36,7 @@
             <padding>
                 <Insets bottom="10" left="10" right="10" top="10"/>
             </padding>
-            <TextArea fx:id="inputField" prefHeight="91.0" prefWidth="498.0" wrapText="true" HBox.hgrow="ALWAYS" styleClass="form-control"/>
+            <JFXTextArea fx:id="inputField" prefHeight="91.0" prefWidth="498.0" wrapText="true" HBox.hgrow="ALWAYS" styleClass="form-control"/>
             <JFXButton onAction="#handleSend" text="发送" prefWidth="100" prefHeight="40" buttonType="RAISED" style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
         </HBox>
     </bottom>
