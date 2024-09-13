@@ -11,10 +11,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Text;
 
 import java.net.URL;
 import java.util.Objects;
@@ -103,7 +106,18 @@ public class AIChatController implements Initializable {
         Label messageLabel = new Label(message);
         messageLabel.setWrapText(true);
         messageLabel.setStyle("-fx-background-color: rgba(255, 255, 255, 0.5); -fx-padding: 10; -fx-background-radius: 10;");
-        messageLabel.getStyleClass().add("alert alert-info");
+
+        // 添加右键菜单
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem copyItem = new MenuItem("复制");
+        copyItem.setOnAction(event -> {
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(messageLabel.getText());
+            clipboard.setContent(content);
+        });
+        contextMenu.getItems().add(copyItem);
+        messageLabel.setOnContextMenuRequested(event -> contextMenu.show(messageLabel, event.getScreenX(), event.getScreenY()));
 
         Platform.runLater(() -> {
             // 根据消息类型设置布局
