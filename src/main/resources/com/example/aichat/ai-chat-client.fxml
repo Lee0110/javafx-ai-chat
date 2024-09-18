@@ -1,43 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextArea?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.BorderPane?>
-<?import com.jfoenix.controls.*?>
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.aichat.controller.AIChatController">
-    <!-- 顶部区域 -->
-    <top>
-        <MenuBar>
-            <Menu text="选项">
-                <MenuItem text="设置" onAction="#handleOpenSettings"/>
-                <MenuItem text="清除聊天记录" onAction="#handleClearChat"/>
-                <MenuItem text="导出聊天记录" onAction="#handleExportChat"/>
-                <MenuItem text="关于" onAction="#handleOpenAbout"/>
-            </Menu>
-        </MenuBar>
-    </top>
 
-    <!-- 中间区域放聊天记录 -->
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.aichat.controller.AIChatController">
+    <!--  左侧栏  -->
+    <left>
+        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <left>
+                <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <center>
+                        <JFXListView prefHeight="300.0" prefWidth="213.0" BorderPane.alignment="CENTER">
+                            <Label>Item 1</Label>
+                            <Label>Item 2</Label>
+                            <Label>Item 3</Label>
+                        </JFXListView>
+                    </center>
+                    <top>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                    </top>
+                    <bottom>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                    </bottom>
+                </BorderPane>
+            </left>
+         <right>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <top>
+                  <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <TextArea prefHeight="29.0" prefWidth="158.0" />
+                        <JFXButton text="+" />
+                     </children>
+                  </HBox>
+               </top>
+               <center>
+                   <JFXListView prefHeight="300.0" prefWidth="213.0" BorderPane.alignment="CENTER">
+                       <Label>Item 1</Label>
+                       <Label>Item 2</Label>
+                       <Label>Item 3</Label>
+                   </JFXListView>
+               </center>
+            </BorderPane>
+         </right>
+        </BorderPane>
+    </left>
     <center>
-        <ScrollPane fx:id="scrollPane" fitToWidth="true">
-            <VBox fx:id="chatBox" spacing="5">
-                <padding>
-                    <Insets bottom="10" left="10" right="10" top="10"/>
-                </padding>
-            </VBox>
-        </ScrollPane>
+        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <center>
+                <ScrollPane fx:id="scrollPane" prefHeight="500.0" prefWidth="542.0" BorderPane.alignment="CENTER">
+                    <VBox fx:id="chatBox" spacing="5">
+                        <padding>
+                            <Insets bottom="10" left="10" right="10" top="10" />
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </center>
+            <bottom>
+                <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <JFXTextArea fx:id="inputField" prefHeight="100.0" prefWidth="230.0" wrapText="true" HBox.hgrow="ALWAYS" />
+                    <BorderPane prefHeight="100.0" prefWidth="66.0">
+                        <center>
+                            <JFXButton fx:id="sendButton" buttonType="RAISED" onAction="#handleSend" prefHeight="29.0" prefWidth="51.0" style="-fx-font-size:14px;-fx-background-color:WHITE;" text="发送" BorderPane.alignment="CENTER" />
+                        </center>
+                    </BorderPane>
+                </HBox>
+            </bottom>
+        </BorderPane>
     </center>
-
-    <!-- 底部区域放输入框和发送按钮 -->
-    <bottom>
-        <HBox spacing="5">
-            <padding>
-                <Insets bottom="10" left="10" right="10" top="10"/>
-            </padding>
-            <JFXTextArea fx:id="inputField" prefHeight="91.0" prefWidth="498.0" wrapText="true" HBox.hgrow="ALWAYS"/>
-            <JFXButton fx:id="sendButton" onAction="#handleSend" text="发送" prefWidth="50" prefHeight="20" buttonType="RAISED" style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
-        </HBox>
-    </bottom>
 </BorderPane>

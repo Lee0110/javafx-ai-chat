@@ -63,35 +63,6 @@ public class AIChatController implements Initializable {
         }
     }
 
-    @FXML
-    private void handleClearChat() {
-        chatBox.getChildren().clear();
-        ChatUtil.clearChatMemory();
-    }
-
-    @FXML
-    private void handleExportChat() {
-        // todo
-    }
-
-    @FXML
-    private void handleOpenSettings() {
-        Stage settingsStage = new Stage();
-        settingsStage.setTitle("设置");
-        // 可以在这里添加更多的UI元素到settingsStage
-        settingsStage.setScene(new Scene(new Pane(), 400, 300));
-        settingsStage.show();
-    }
-
-    @FXML
-    private void handleOpenAbout() {
-        Stage aboutStage = new Stage();
-        aboutStage.setTitle("关于");
-        // 可以在这里添加更多的UI元素到aboutStage
-        aboutStage.setScene(new Scene(new Pane(), 400, 300));
-        aboutStage.show();
-    }
-
     private void addMessage(String message, Pos alignment) {
         HBox messageBox = new HBox();
         messageBox.setAlignment(alignment);
