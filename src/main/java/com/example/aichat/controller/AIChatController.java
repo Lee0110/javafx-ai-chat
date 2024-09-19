@@ -32,6 +32,12 @@ public class AIChatController implements Initializable {
     public JFXButton sendButton;
 
     @FXML
+    public ImageView aiImageView;
+
+    @FXML
+    public ImageView settingImageView;
+
+    @FXML
     private JFXTextArea inputField;
 
     @FXML
@@ -44,10 +50,11 @@ public class AIChatController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 设置背景图片
-        Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResource("/img/background.jpg")).toExternalForm());
-        BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        scrollPane.setBackground(new Background(background));
+        Image aiImage = new Image(Objects.requireNonNull(getClass().getResource("/img/ai64*64.png")).toExternalForm());
+        aiImageView.setImage(aiImage);
+
+        Image settingImage = new Image(Objects.requireNonNull(getClass().getResource("/img/setting.png")).toExternalForm());
+        settingImageView.setImage(settingImage);
     }
 
     @FXML
