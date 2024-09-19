@@ -50,10 +50,10 @@ public class AIChatController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Image aiImage = new Image(Objects.requireNonNull(getClass().getResource("/img/ai64*64.png")).toExternalForm());
+        Image aiImage = new Image(Objects.requireNonNull(getClass().getResource("/img/ai_64_64.png")).toExternalForm());
         aiImageView.setImage(aiImage);
 
-        Image settingImage = new Image(Objects.requireNonNull(getClass().getResource("/img/setting64*64.png")).toExternalForm());
+        Image settingImage = new Image(Objects.requireNonNull(getClass().getResource("/img/setting_64_64.png")).toExternalForm());
         settingImageView.setImage(settingImage);
     }
 
