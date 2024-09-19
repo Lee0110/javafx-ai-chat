@@ -53,7 +53,7 @@ public class AIChatController implements Initializable {
         Image aiImage = new Image(Objects.requireNonNull(getClass().getResource("/img/ai64*64.png")).toExternalForm());
         aiImageView.setImage(aiImage);
 
-        Image settingImage = new Image(Objects.requireNonNull(getClass().getResource("/img/setting.png")).toExternalForm());
+        Image settingImage = new Image(Objects.requireNonNull(getClass().getResource("/img/setting64*64.png")).toExternalForm());
         settingImageView.setImage(settingImage);
     }
 
