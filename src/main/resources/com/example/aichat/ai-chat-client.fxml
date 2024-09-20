@@ -12,62 +12,39 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.aichat.controller.AIChatController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
+            prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.aichat.controller.AIChatController">
     <left>
         <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <!--  左侧栏  -->
-            <left>
-                <BorderPane prefHeight="600.0" prefWidth="80.0" BorderPane.alignment="CENTER">
-                    <!--  程序头像  -->
-                    <top>
-                        <ImageView fx:id="aiImageView" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
-                    </top>
-                    <!--  功能区  -->
-                    <center>
-                        <JFXListView prefHeight="483.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                            <Label>Item 1</Label>
-                            <Label>Item 2</Label>
-                            <Label>Item 3</Label>
-                        </JFXListView>
-                    </center>
-                    <!--  设置  -->
-                    <bottom>
-                        <ImageView fx:id="settingImageView" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
-                    </bottom>
-                </BorderPane>
-            </left>
-            <right>
-                <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                    <top>
-                        <HBox prefHeight="26.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                            <children>
-                                <!--  快捷搜索  -->
-                                <TextArea prefHeight="46.0" prefWidth="158.0" />
-                                <!--  新建会话  -->
-                                <JFXButton text="+" />
-                            </children>
-                        </HBox>
-                    </top>
-                    <!--  会话栏  -->
-                    <center>
-                        <JFXListView prefHeight="300.0" prefWidth="213.0" BorderPane.alignment="CENTER">
-                            <Label>Item 1</Label>
-                            <Label>Item 2</Label>
-                            <Label>Item 3</Label>
-                        </JFXListView>
-                    </center>
-                </BorderPane>
-            </right>
+            <top>
+                <HBox prefHeight="26.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <!--  快捷搜索  -->
+                        <TextArea prefHeight="46.0" prefWidth="158.0"/>
+                        <!--  新建会话  -->
+                        <JFXButton text="+"/>
+                    </children>
+                </HBox>
+            </top>
+            <!--  会话栏  -->
+            <center>
+                <JFXListView prefHeight="300.0" prefWidth="213.0" BorderPane.alignment="CENTER">
+                    <Label>Item 1</Label>
+                    <Label>Item 2</Label>
+                    <Label>Item 3</Label>
+                </JFXListView>
+            </center>
         </BorderPane>
     </left>
     <center>
-        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <BorderPane BorderPane.alignment="CENTER">
             <center>
                 <!--  会话内容  -->
-                <ScrollPane fx:id="scrollPane" prefHeight="500.0" prefWidth="542.0" BorderPane.alignment="CENTER">
+                <ScrollPane fx:id="scrollPane" BorderPane.alignment="CENTER">
                     <VBox fx:id="chatBox" spacing="5">
                         <padding>
-                            <Insets bottom="10" left="10" right="10" top="10" />
+                            <Insets bottom="10" left="10" right="10" top="10"/>
                         </padding>
                     </VBox>
                 </ScrollPane>
@@ -75,11 +52,14 @@
             <bottom>
                 <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <!--  编辑对话  -->
-                    <JFXTextArea fx:id="inputField" prefHeight="100.0" prefWidth="230.0" wrapText="true" HBox.hgrow="ALWAYS" />
+                    <JFXTextArea fx:id="inputField" prefHeight="100.0" prefWidth="230.0" wrapText="true"
+                                 HBox.hgrow="ALWAYS"/>
                     <!--  发送按钮  -->
                     <BorderPane prefHeight="100.0" prefWidth="66.0">
                         <center>
-                            <JFXButton fx:id="sendButton" buttonType="RAISED" onAction="#handleSend" prefHeight="29.0" prefWidth="51.0" style="-fx-font-size:14px;-fx-background-color:WHITE;" text="发送" BorderPane.alignment="CENTER" />
+                            <JFXButton fx:id="sendButton" buttonType="RAISED" onAction="#handleSend" prefHeight="29.0"
+                                       prefWidth="51.0" style="-fx-font-size:14px;-fx-background-color:WHITE;"
+                                       text="发送" BorderPane.alignment="CENTER"/>
                         </center>
                     </BorderPane>
                 </HBox>

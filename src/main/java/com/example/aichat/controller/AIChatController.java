@@ -7,17 +7,14 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Text;
 
 import java.net.URL;
 import java.util.Objects;
@@ -32,12 +29,6 @@ public class AIChatController implements Initializable {
     public JFXButton sendButton;
 
     @FXML
-    public ImageView aiImageView;
-
-    @FXML
-    public ImageView settingImageView;
-
-    @FXML
     private JFXTextArea inputField;
 
     @FXML
@@ -46,15 +37,14 @@ public class AIChatController implements Initializable {
     @FXML
     private ScrollPane scrollPane;
 
-    @FXML
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Image aiImage = new Image(Objects.requireNonNull(getClass().getResource("/img/ai_64_64.png")).toExternalForm());
-        aiImageView.setImage(aiImage);
-
-        Image settingImage = new Image(Objects.requireNonNull(getClass().getResource("/img/setting_64_64.png")).toExternalForm());
-        settingImageView.setImage(settingImage);
+        // 设置输入框的回车事件，按下shift+回车发送消息
+        inputField.setOnKeyPressed(event -> {
+            if (event.isShiftDown() && event.getCode().getName().equals("Enter") && !sendButton.isDisable()) {
+                handleSend();
+            }
+        });
     }
 
     @FXML
