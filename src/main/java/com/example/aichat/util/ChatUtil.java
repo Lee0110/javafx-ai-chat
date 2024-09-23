@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
@@ -45,6 +47,23 @@ public class ChatUtil implements BeanFactoryAware {
       ChatResponse chatResponse = chatClient.prompt().user(input).advisors(a -> a
           .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
           .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, DEFAULT_CHAT_MEMORY_RESPONSE_SIZE)).call().chatResponse();
+      log.info("对话结束，详细信息：{}", chatResponse);
+      BigDecimal time = new BigDecimal(System.currentTimeMillis() - start).divide(new BigDecimal(1000), 1, RoundingMode.HALF_UP);
+      reply = chatResponse.getResult().getOutput().getContent() + "\n" + "耗时：" + time + "秒";
+      log.info("对话生成完毕，耗时：{}秒", time);
+    } catch (Exception e) {
+      log.error("对话出错", e);
+      reply = "对话出错，请稍后再试";
+    }
+    return reply;
+  }
+
+  public static String chat(String input, String systemPrompt, List<Message> messages) {
+    long start = System.currentTimeMillis();
+    log.info("开始对话，对话id：{}，用户输入：{}", chatId, input);
+    String reply;
+    try {
+      ChatResponse chatResponse = chatClient.prompt().user(input).system(systemPrompt).messages(messages).call().chatResponse();
       log.info("对话结束，详细信息：{}", chatResponse);
       BigDecimal time = new BigDecimal(System.currentTimeMillis() - start).divide(new BigDecimal(1000), 1, RoundingMode.HALF_UP);
       reply = chatResponse.getResult().getOutput().getContent() + "\n" + "耗时：" + time + "秒";
