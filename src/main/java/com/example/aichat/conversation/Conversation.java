@@ -15,6 +15,8 @@ import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class Conversation {
   /**
@@ -39,11 +41,14 @@ public class Conversation {
   }
 
   public void chat(String input) {
+    chatMemory.add(new UserMessage(input));
     chatBoxList.add(getMessageHBox(input, Pos.BASELINE_RIGHT));
+    String lastReply = input;
     for (Robot robot : robotList) {
-      String reply = ChatUtil.chat(input, robot.getSystemPrompt(), chatMemory.toList());
+      String reply = ChatUtil.chat(lastReply, robot.getSystemPrompt(), chatMemory.toList());
       chatMemory.add(new UserMessage(reply));
       chatBoxList.add(getMessageHBox(reply, Pos.BASELINE_LEFT));
+      lastReply = reply;
     }
   }
 
