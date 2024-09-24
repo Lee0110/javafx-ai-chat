@@ -14,20 +14,24 @@ public class FixedSizeQueue<E> {
     this.queue = Collections.synchronizedList(new LinkedList<>());
   }
 
-  public synchronized void add(E element) {
-    if (queue.size() == maxSize) {
-      queue.remove(0);
+  public void add(E element) {
+    synchronized (queue) {
+      if (queue.size() == maxSize) {
+        queue.remove(0);
+      }
+      queue.add(element);
     }
-    queue.add(element);
   }
 
-  public synchronized void clear() {
-    queue.clear();
+  public void clear() {
+    synchronized (queue) {
+      queue.clear();
+    }
   }
 
-  public synchronized List<E> toList() {
-    List<E> list = new ArrayList<>();
-    Collections.copy(list, queue);
-    return list;
+  public List<E> toList() {
+    synchronized (queue) {
+      return new ArrayList<>(queue);
+    }
   }
 }

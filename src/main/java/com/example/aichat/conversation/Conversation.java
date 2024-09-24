@@ -15,10 +15,13 @@ import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Conversation {
+  private final String id;
+
   /**
    * 聊天记录
    */
@@ -30,37 +33,54 @@ public class Conversation {
   private final List<Robot> robotList;
 
   /**
-   * 聊天框列表
+   * 聊天框列表缓存
    */
   private final List<HBox> chatBoxList;
 
+  /**
+   * 聊天消息队列，生成了消息先入队，当切换到当前会话时，再取出，这样不需要等到全部生成完成再显示
+   **/
+  private final Queue<String> replyQueue;
+
+  /**
+   * 线程池
+   */
+  private final ExecutorService executorService;
+
   public Conversation(int chatMemorySize, List<Robot> robotList) {
+    this.id = UUID.randomUUID().toString();
     this.chatMemory = new FixedSizeQueue<>(chatMemorySize);
     this.robotList = robotList;
     this.chatBoxList = Collections.synchronizedList(new ArrayList<>());
+    this.replyQueue = new LinkedBlockingQueue<>();
+    this.executorService = Executors.newFixedThreadPool(10);
   }
 
   public void chat(String input) {
-    chatMemory.add(new UserMessage(input));
-    chatBoxList.add(getMessageHBox(input, Pos.BASELINE_RIGHT));
-    String lastReply = input;
-    for (Robot robot : robotList) {
-      String reply = ChatUtil.chat(lastReply, robot.getSystemPrompt(), chatMemory.toList());
-      chatMemory.add(new UserMessage(reply));
-      chatBoxList.add(getMessageHBox(reply, Pos.BASELINE_LEFT));
-      lastReply = reply;
+    executorService.submit(() -> {
+      chatMemory.add(new UserMessage(input));
+      String lastReply = input;
+      for (Robot robot : robotList) {
+        List<Message> list = chatMemory.toList();
+        String reply = robot.getName() + "：" + ChatUtil.mockChat(lastReply, robot.getSystemPrompt(), list);
+        chatMemory.add(new UserMessage(reply));
+        replyQueue.add(reply);
+        lastReply = reply;
+      }
+    });
+  }
+
+  public synchronized List<HBox> getChatBoxList() {
+    while (!replyQueue.isEmpty()) {
+      this.chatBoxList.add(getMessageHBox(replyQueue.poll(), Pos.BASELINE_LEFT));
     }
+    return this.chatBoxList;
   }
 
   private HBox getMessageHBox(String message, Pos alignment) {
     HBox messageBox = new HBox();
     messageBox.setAlignment(alignment);
     messageBox.setSpacing(10);
-
-    // 头像
-    ImageView avatar = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/default_avatar.png"))));
-    avatar.setFitHeight(40);
-    avatar.setFitWidth(40);
 
     // 消息内容
     Label messageLabel = new Label(message);
@@ -82,10 +102,15 @@ public class Conversation {
     });
     contextMenu.getItems().add(copyItem);
     messageLabel.setOnContextMenuRequested(event -> contextMenu.show(messageLabel, event.getScreenX(), event.getScreenY()));
+    messageBox.getChildren().add(messageLabel);
     return messageBox;
   }
 
   public void clearChatMemory() {
     chatMemory.clear();
+  }
+
+  public String getId() {
+    return id;
   }
 }

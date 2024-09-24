@@ -1,6 +1,7 @@
 package com.example.aichat.util;
 
-import com.example.aichat.controller.AIChatController;
+import com.example.aichat.conversation.Conversation;
+import com.example.aichat.conversation.Robot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -11,10 +12,14 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
@@ -22,7 +27,7 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 
 @Component
 public class ChatUtil implements BeanFactoryAware {
-  private static final Logger log = LoggerFactory.getLogger(AIChatController.class);
+  private static final Logger log = LoggerFactory.getLogger(ChatUtil.class);
 
   private static ChatClient chatClient;
 
@@ -72,6 +77,10 @@ public class ChatUtil implements BeanFactoryAware {
       reply = "对话出错，请稍后再试";
     }
     return reply;
+  }
+
+  public static String mockChat(String input, String systemPrompt, List<Message> messages) {
+    return "模拟对话：" + input;
   }
 
   public static void clearChatMemory() {

@@ -1,9 +1,12 @@
 package com.example.aichat.controller;
 
+import com.example.aichat.conversation.Conversation;
+import com.example.aichat.conversation.Robot;
 import com.example.aichat.util.ChatUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -17,9 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AIChatController implements Initializable {
 
@@ -37,6 +40,16 @@ public class AIChatController implements Initializable {
     @FXML
     private ScrollPane scrollPane;
 
+    /**
+     * key: 会话id value: 会话
+     */
+    private Map<String, Conversation> conversationMap;
+
+    /**
+     * 当前会话
+     */
+    private Conversation holdConversation;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // 设置输入框的回车事件，按下shift+回车发送消息
@@ -45,18 +58,21 @@ public class AIChatController implements Initializable {
                 handleSend();
             }
         });
+        // 官方预置的对话
+        conversationMap = new ConcurrentHashMap<>();
+        Robot robot1 = new Robot("AI助手", "你是一个智能助手，帮助人们解决各种问题。", 0);
+        Robot robot2 = new Robot("AI助手2", "你是一个智能助手，帮助人们解决各种问题。", 1);
+        Conversation conversation = new Conversation(20, Arrays.asList(robot1, robot2));
+        conversationMap.put(conversation.getId(), conversation);
+        holdConversation = conversation;
     }
 
     @FXML
     private void handleSend() {
         String inputText = inputField.getText();
         if (!inputText.isEmpty()) {
-            // 显示用户输入的消息
             addMessage(inputText, Pos.BASELINE_RIGHT);
-            // 获取回复消息并显示
-            CompletableFuture
-                    .supplyAsync(() -> ChatUtil.chat(inputText))
-                    .thenAccept(reply -> Platform.runLater(() -> addMessage(reply, Pos.BASELINE_LEFT)));
+            holdConversation.chat(inputText);
         }
     }
 
@@ -64,11 +80,6 @@ public class AIChatController implements Initializable {
         HBox messageBox = new HBox();
         messageBox.setAlignment(alignment);
         messageBox.setSpacing(10);
-
-        // 头像
-        ImageView avatar = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/default_avatar.png"))));
-        avatar.setFitHeight(40);
-        avatar.setFitWidth(40);
 
         // 消息内容
         Label messageLabel = new Label(message);
@@ -90,16 +101,31 @@ public class AIChatController implements Initializable {
         Platform.runLater(() -> {
             // 根据消息类型设置布局
             if (alignment == Pos.BASELINE_RIGHT) {
-                messageBox.getChildren().addAll(messageLabel, avatar);
+                messageBox.getChildren().addAll(messageLabel);
                 // 清空输入框
                 inputField.clear();
                 sendButton.setDisable(true);
             } else {
-                messageBox.getChildren().addAll(avatar, messageLabel);
+                messageBox.getChildren().addAll(messageLabel);
                 sendButton.setDisable(false);
             }
 
             chatBox.getChildren().add(messageBox);
+            // 滚动到最底部
+            scrollPane.layout();
+            scrollPane.setVvalue(1.0);
+        });
+    }
+
+    @FXML
+    public void handleFlush() {
+        List<HBox> chatBoxList = holdConversation.getChatBoxList();
+        Platform.runLater(() -> {
+            for (HBox hBox : chatBoxList) {
+                if (!chatBox.getChildren().contains(hBox)) {
+                    chatBox.getChildren().add(hBox);
+                }
+            }
             // 滚动到最底部
             scrollPane.layout();
             scrollPane.setVvalue(1.0);

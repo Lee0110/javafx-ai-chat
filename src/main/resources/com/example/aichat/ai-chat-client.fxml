@@ -61,6 +61,11 @@
                                        prefWidth="51.0" style="-fx-font-size:14px;-fx-background-color:WHITE;"
                                        text="发送" BorderPane.alignment="CENTER"/>
                         </center>
+                        <bottom>
+                            <JFXButton buttonType="RAISED" onAction="#handleFlush" prefHeight="29.0"
+                                       prefWidth="51.0" style="-fx-font-size:14px;-fx-background-color:WHITE;"
+                                       text="接收消息" BorderPane.alignment="CENTER"/>
+                        </bottom>
                     </BorderPane>
                 </HBox>
             </bottom>
