@@ -59,6 +59,7 @@ public class Conversation {
   public void chat(String input) {
     executorService.submit(() -> {
       chatMemory.add(new UserMessage(input));
+      this.chatBoxList.add(getMessageHBox(input, Pos.BASELINE_RIGHT));
       String lastReply = input;
       for (Robot robot : robotList) {
         List<Message> list = chatMemory.toList();

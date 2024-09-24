@@ -29,11 +29,8 @@
             </top>
             <!--  会话栏  -->
             <center>
-                <JFXListView prefHeight="300.0" prefWidth="213.0" BorderPane.alignment="CENTER">
-                    <Label>Item 1</Label>
-                    <Label>Item 2</Label>
-                    <Label>Item 3</Label>
-                </JFXListView>
+                <JFXListView fx:id="conversationJFXListView" prefHeight="300.0" prefWidth="213.0"
+                             BorderPane.alignment="CENTER" onMouseClicked="#handleConversationChange"/>
             </center>
         </BorderPane>
     </left>
