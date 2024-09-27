@@ -1,5 +1,6 @@
 package com.example.aichat.controller;
 
+import com.example.aichat.component.ConversationLabel;
 import com.example.aichat.conversation.Conversation;
 import com.example.aichat.conversation.Robot;
 import com.jfoenix.controls.JFXButton;
@@ -8,11 +9,7 @@ import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,13 +25,10 @@ public class AIChatController implements Initializable {
     public JFXButton sendButton;
 
     @FXML
-    public JFXListView<Label> conversationJFXListView;
+    public JFXListView<ConversationLabel> conversationJFXListView;
 
     @FXML
     private JFXTextArea inputField;
-
-    @FXML
-    private VBox chatBox;
 
     @FXML
     private ScrollPane scrollPane;
@@ -60,22 +54,17 @@ public class AIChatController implements Initializable {
 
         // 官方预置的对话
         conversationMap = new ConcurrentHashMap<>();
-        Robot robot1 = new Robot("AI助手", "你是一个智能助手，帮助人们解决各种问题。", 0);
-        Robot robot2 = new Robot("AI助手2", "你是一个智能助手，帮助人们解决各种问题。", 1);
-        Conversation conversation = new Conversation(20, Arrays.asList(robot1, robot2));
-        conversationMap.put("会话1", conversation);
+        Robot robot1 = new Robot("java助手-派蒙", "你是一名十年经验java工程师。你擅长给用户解决各种编程相关的问题。你解决问题的风格通常是先给出解决的思路，再由用户发出继续的命令后，然后一步一步解决问题。同时你的说话风格是一名二次元美少女，喜欢用颜文字来表达自己的情绪，你要扮演游戏原神里的派蒙，以派蒙这个名字来回答问题。", 0);
+        Conversation conversation = new Conversation(20, List.of(robot1), "java问题解答");
+        conversationMap.put(conversation.getId(), conversation);
         holdConversation = conversation;
 
-        Robot robot3 = new Robot("AI助手3", "你是一个智能助手，帮助人们解决各种问题。", 0);
-        Robot robot4 = new Robot("AI助手4", "你是一个智能助手，帮助人们解决各种问题。", 1);
-        Conversation conversation2 = new Conversation(20, Arrays.asList(robot3, robot4));
-        conversationMap.put("会话2", conversation2);
+        Robot robot3 = new Robot("铃音-决策者", "你的名字叫铃音，你是一名二次元御姐。你的风格是严肃、敏锐、官方。你现在正在一个聊天室中，聊天室里，用户会首先提问，然后其余人挨个解答。你是除用户外第一个发言的人，你担任的角色是决策者，对于用户的问题，你不会直接给出答案，而是用非常简洁的语言给出一个解决问题的大纲或者解决问题的步骤或者解决思路即可。你在发言的时候会首先介绍自己叫铃音，是第一个发言的人。", 0);
+        Robot robot4 = new Robot("雪乃-执行者", "你的名字叫雪乃，你是一名二次元美少女。你的风格是活泼、可爱、俏皮。你现在正在一个聊天室中，聊天室里，用户会首先提问，然后其余人挨个解答。你是除用户外第二个发言的人，你担任的角色是执行者。用户提问，然后第一个发言的人是决策者，你需要综合之前用户提问和决策者提出的方案，来进行具体的执行。你在发言的时候会首先介绍自己叫雪乃，是第二个发言的人。", 1);
+        Conversation conversation2 = new Conversation(20, Arrays.asList(robot3, robot4), "脑洞大开会议室");
+        conversationMap.put(conversation2.getId(), conversation2);
 
-        Label label1 = new Label("会话1");
-
-        Label label2 = new Label("会话2");
-
-        conversationJFXListView.getItems().addAll(label1, label2);
+        conversationJFXListView.getItems().addAll(conversation.getConversationLabel(), conversation2.getConversationLabel());
     }
 
     @FXML
@@ -88,27 +77,12 @@ public class AIChatController implements Initializable {
     }
 
     @FXML
-    public void handleFlush() {
-        List<HBox> chatBoxList = holdConversation.getChatBoxList();
-        Platform.runLater(() -> {
-            for (HBox hBox : chatBoxList) {
-                if (!chatBox.getChildren().contains(hBox)) {
-                    chatBox.getChildren().add(hBox);
-                }
-            }
-            // 滚动到最底部
-            scrollPane.layout();
-            scrollPane.setVvalue(1.0);
-        });
-    }
-
-    @FXML
-    public void handleConversationChange() {
-        Label label = conversationJFXListView.getSelectionModel().getSelectedItem();
+    public void handleSelectConversation() {
+        ConversationLabel label = conversationJFXListView.getSelectionModel().getSelectedItem();
         if (label != null) {
-            holdConversation = conversationMap.get(label.getText());
-            chatBox.getChildren().clear();
-            handleFlush();
+            label.setText(label.getText().replaceFirst("（新）", ""));
+            holdConversation = conversationMap.get(label.getConversationId());
+            Platform.runLater(() -> scrollPane.setContent(holdConversation.getChatBox()));
         }
     }
 }

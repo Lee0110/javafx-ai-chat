@@ -1,23 +1,24 @@
 package com.example.aichat.conversation;
 
+import com.example.aichat.component.ConversationLabel;
 import com.example.aichat.util.ChatUtil;
 import com.example.aichat.util.FixedSizeQueue;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class Conversation {
   private final String id;
@@ -33,49 +34,54 @@ public class Conversation {
   private final List<Robot> robotList;
 
   /**
-   * 聊天框列表缓存
+   * 聊天框
    */
-  private final List<HBox> chatBoxList;
+  private final VBox chatBox;
 
   /**
-   * 聊天消息队列，生成了消息先入队，当切换到当前会话时，再取出，这样不需要等到全部生成完成再显示
-   **/
-  private final Queue<String> replyQueue;
+   * 会话标签
+   */
+  private final ConversationLabel conversationLabel;
 
   /**
    * 线程池
    */
   private final ExecutorService executorService;
 
-  public Conversation(int chatMemorySize, List<Robot> robotList) {
+  public Conversation(int chatMemorySize, List<Robot> robotList, String subject) {
     this.id = UUID.randomUUID().toString();
     this.chatMemory = new FixedSizeQueue<>(chatMemorySize);
     this.robotList = robotList;
-    this.chatBoxList = Collections.synchronizedList(new ArrayList<>());
-    this.replyQueue = new LinkedBlockingQueue<>();
     this.executorService = Executors.newFixedThreadPool(10);
+    this.chatBox = new VBox();
+    configureChatBox();
+    this.conversationLabel = new ConversationLabel(id, subject);
+  }
+
+  private void configureChatBox() {
+    this.chatBox.setSpacing(5);
+    this.chatBox.setPadding(new Insets(10, 10, 10, 10));
   }
 
   public void chat(String input) {
     executorService.submit(() -> {
       chatMemory.add(new UserMessage(input));
-      this.chatBoxList.add(getMessageHBox(input, Pos.BASELINE_RIGHT));
-      String lastReply = input;
+      Platform.runLater(() -> this.chatBox.getChildren().add(getMessageHBox(input, Pos.BASELINE_RIGHT)));
       for (Robot robot : robotList) {
-        List<Message> list = chatMemory.toList();
-        String reply = robot.getName() + "：" + ChatUtil.mockChat(lastReply, robot.getSystemPrompt(), list);
+        String reply = robot.getName() + "：" + ChatUtil.chat(robot.getSystemPrompt(), chatMemory.toList());
+        Platform.runLater(() -> this.chatBox.getChildren().add(getMessageHBox(reply, Pos.BASELINE_LEFT)));
+        Platform.runLater(() -> {
+          if (!conversationLabel.getText().startsWith("（新）")) {
+            this.conversationLabel.setText("（新）" + conversationLabel.getText());
+          }
+        });
         chatMemory.add(new UserMessage(reply));
-        replyQueue.add(reply);
-        lastReply = reply;
       }
     });
   }
 
-  public synchronized List<HBox> getChatBoxList() {
-    while (!replyQueue.isEmpty()) {
-      this.chatBoxList.add(getMessageHBox(replyQueue.poll(), Pos.BASELINE_LEFT));
-    }
-    return this.chatBoxList;
+  public VBox getChatBox() {
+    return chatBox;
   }
 
   private HBox getMessageHBox(String message, Pos alignment) {
@@ -109,9 +115,14 @@ public class Conversation {
 
   public void clearChatMemory() {
     chatMemory.clear();
+    chatBox.getChildren().clear();
   }
 
   public String getId() {
     return id;
+  }
+
+  public ConversationLabel getConversationLabel() {
+    return conversationLabel;
   }
 }

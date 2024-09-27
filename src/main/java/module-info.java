@@ -24,4 +24,5 @@ module com.example.aichat {
     exports com.example.aichat.config;
     exports com.example.aichat.util;
     exports com.example.aichat.conversation;
+    exports com.example.aichat.component;
 }

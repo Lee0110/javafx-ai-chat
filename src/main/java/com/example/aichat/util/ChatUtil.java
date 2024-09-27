@@ -1,27 +1,18 @@
 package com.example.aichat.util;
 
-import com.example.aichat.conversation.Conversation;
-import com.example.aichat.conversation.Robot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
-import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
 @Component
 public class ChatUtil implements BeanFactoryAware {
@@ -29,46 +20,20 @@ public class ChatUtil implements BeanFactoryAware {
 
   private static ChatClient chatClient;
 
-  private static final AtomicInteger chatId = new AtomicInteger(0);
-
-  private static ChatMemory chatMemory;
-
-  public static final int DEFAULT_CHAT_MEMORY_RESPONSE_SIZE = 20;
-
   @Override
   public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
     chatClient = beanFactory.getBean(ChatClient.class);
-    chatMemory = beanFactory.getBean(ChatMemory.class);
   }
 
-  public static String chat(String input) {
+  public static String chat(String systemPrompt, List<Message> messages) {
     long start = System.currentTimeMillis();
-    log.info("开始对话，对话id：{}，用户输入：{}", chatId, input);
     String reply;
     try {
-      ChatResponse chatResponse = chatClient.prompt().user(input).advisors(a -> a
-          .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
-          .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, DEFAULT_CHAT_MEMORY_RESPONSE_SIZE)).call().chatResponse();
+      Message last = messages.removeLast();
+      ChatResponse chatResponse = chatClient.prompt().user(last.getContent()).system(systemPrompt).messages(messages).call().chatResponse();
       log.info("对话结束，详细信息：{}", chatResponse);
       BigDecimal time = new BigDecimal(System.currentTimeMillis() - start).divide(new BigDecimal(1000), 1, RoundingMode.HALF_UP);
-      reply = chatResponse.getResult().getOutput().getContent() + "\n" + "耗时：" + time + "秒";
-      log.info("对话生成完毕，耗时：{}秒", time);
-    } catch (Exception e) {
-      log.error("对话出错", e);
-      reply = "对话出错，请稍后再试";
-    }
-    return reply;
-  }
-
-  public static String chat(String input, String systemPrompt, List<Message> messages) {
-    long start = System.currentTimeMillis();
-    log.info("开始对话，对话id：{}，用户输入：{}", chatId, input);
-    String reply;
-    try {
-      ChatResponse chatResponse = chatClient.prompt().user(input).system(systemPrompt).messages(messages).call().chatResponse();
-      log.info("对话结束，详细信息：{}", chatResponse);
-      BigDecimal time = new BigDecimal(System.currentTimeMillis() - start).divide(new BigDecimal(1000), 1, RoundingMode.HALF_UP);
-      reply = chatResponse.getResult().getOutput().getContent() + "\n" + "耗时：" + time + "秒";
+      reply = chatResponse.getResult().getOutput().getContent() + "\n" + "生成耗时：" + time + "秒";
       log.info("对话生成完毕，耗时：{}秒", time);
     } catch (Exception e) {
       log.error("对话出错", e);
@@ -78,10 +43,11 @@ public class ChatUtil implements BeanFactoryAware {
   }
 
   public static String mockChat(String input, String systemPrompt, List<Message> messages) {
+    try {
+      Thread.sleep(3000);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
     return "模拟对话：" + UUID.randomUUID();
-  }
-
-  public static void clearChatMemory() {
-    chatMemory.clear(String.valueOf(chatId.getAndIncrement()));
   }
 }
