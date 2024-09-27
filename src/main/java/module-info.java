@@ -17,6 +17,8 @@ module com.example.aichat {
     opens com.example.aichat.controller to javafx.fxml, spring.core, spring.beans, spring.context;
     opens com.example.aichat.config to javafx.fxml, spring.core, spring.beans, spring.context;
     opens com.example.aichat.util to javafx.fxml, spring.core, spring.beans, spring.context;
+    opens com.example.aichat.conversation to javafx.fxml, spring.core, spring.beans, spring.context;
+    opens com.example.aichat.component to javafx.fxml, spring.core, spring.beans, spring.context;
 
     // 导出包
     exports com.example.aichat;

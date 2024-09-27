@@ -29,8 +29,7 @@ public class ChatUtil implements BeanFactoryAware {
     long start = System.currentTimeMillis();
     String reply;
     try {
-      Message last = messages.removeLast();
-      ChatResponse chatResponse = chatClient.prompt().user(last.getContent()).system(systemPrompt).messages(messages).call().chatResponse();
+      ChatResponse chatResponse = chatClient.prompt().user(messages.removeLast().getContent()).system(systemPrompt).messages(messages).call().chatResponse();
       log.info("对话结束，详细信息：{}", chatResponse);
       BigDecimal time = new BigDecimal(System.currentTimeMillis() - start).divide(new BigDecimal(1000), 1, RoundingMode.HALF_UP);
       reply = chatResponse.getResult().getOutput().getContent() + "\n" + "生成耗时：" + time + "秒";
