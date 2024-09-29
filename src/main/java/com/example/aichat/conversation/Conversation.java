@@ -3,12 +3,14 @@ package com.example.aichat.conversation;
 import com.example.aichat.component.ConversationLabel;
 import com.example.aichat.util.ChatUtil;
 import com.example.aichat.util.FixedSizeQueue;
+import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
@@ -90,12 +92,13 @@ public class Conversation {
     messageBox.setSpacing(10);
 
     // 消息内容
-    Label messageLabel = new Label(message);
-    messageLabel.setWrapText(true);
+    JFXTextArea messageTextArea = new JFXTextArea(message);
+    messageTextArea.setWrapText(true);
+    messageTextArea.setEditable(false);
     if (alignment == Pos.BASELINE_RIGHT) {
-      messageLabel.setStyle("-fx-background-color: rgba(255, 255, 255, 0.4); -fx-padding: 10; -fx-background-radius: 10;");
+      messageTextArea.setStyle("-fx-background-color: rgba(255, 255, 255, 0.4); -fx-padding: 10; -fx-background-radius: 10;");
     } else {
-      messageLabel.setStyle("-fx-background-color: rgba(190, 250, 250, 0.6); -fx-padding: 10; -fx-background-radius: 10;");
+      messageTextArea.setStyle("-fx-background-color: rgba(190, 250, 250, 0.6); -fx-padding: 10; -fx-background-radius: 10;");
     }
 
     // 添加右键菜单
@@ -104,12 +107,12 @@ public class Conversation {
     copyItem.setOnAction(event -> {
       Clipboard clipboard = Clipboard.getSystemClipboard();
       ClipboardContent content = new ClipboardContent();
-      content.putString(messageLabel.getText());
+      content.putString(messageTextArea.getText());
       clipboard.setContent(content);
     });
     contextMenu.getItems().add(copyItem);
-    messageLabel.setOnContextMenuRequested(event -> contextMenu.show(messageLabel, event.getScreenX(), event.getScreenY()));
-    messageBox.getChildren().add(messageLabel);
+    messageTextArea.setOnContextMenuRequested(event -> contextMenu.show(messageTextArea, event.getScreenX(), event.getScreenY()));
+    messageBox.getChildren().add(messageTextArea);
     return messageBox;
   }
 
