@@ -15,6 +15,8 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 
@@ -61,6 +63,8 @@ public class Conversation {
   }
 
   private void configureChatBox() {
+    this.chatBox.setPrefHeight(400);
+    this.chatBox.setPrefWidth(590);
     this.chatBox.setSpacing(5);
     this.chatBox.setPadding(new Insets(10, 10, 10, 10));
   }
@@ -95,25 +99,19 @@ public class Conversation {
     JFXTextArea messageTextArea = new JFXTextArea(message);
     messageTextArea.setWrapText(true);
     messageTextArea.setEditable(false);
+    messageTextArea.setPrefRowCount(message.split("\n").length);
     if (alignment == Pos.BASELINE_RIGHT) {
       messageTextArea.setStyle("-fx-background-color: rgba(255, 255, 255, 0.4); -fx-padding: 10; -fx-background-radius: 10;");
     } else {
       messageTextArea.setStyle("-fx-background-color: rgba(190, 250, 250, 0.6); -fx-padding: 10; -fx-background-radius: 10;");
     }
-
-    // 添加右键菜单
-    ContextMenu contextMenu = new ContextMenu();
-    MenuItem copyItem = new MenuItem("复制");
-    copyItem.setOnAction(event -> {
-      Clipboard clipboard = Clipboard.getSystemClipboard();
-      ClipboardContent content = new ClipboardContent();
-      content.putString(messageTextArea.getText());
-      clipboard.setContent(content);
-    });
-    contextMenu.getItems().add(copyItem);
-    messageTextArea.setOnContextMenuRequested(event -> contextMenu.show(messageTextArea, event.getScreenX(), event.getScreenY()));
+    messageTextArea.textProperty().addListener((observable, oldValue, newValue) -> messageTextArea.setPrefRowCount(newValue.split("\n").length));
     messageBox.getChildren().add(messageTextArea);
     return messageBox;
+  }
+
+  private void adjustTextAreaSize() {
+    // todo
   }
 
   public void clearChatMemory() {
@@ -127,5 +125,10 @@ public class Conversation {
 
   public ConversationLabel getConversationLabel() {
     return conversationLabel;
+  }
+
+  public void export() {
+    // 将会话内容导出到markdown文件中
+
   }
 }

@@ -7,25 +7,25 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXScrollPane?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
             prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.aichat.controller.AIChatController">
     <left>
-        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <BorderPane prefHeight="600.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <top>
-                <HBox prefHeight="26.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                <HBox prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <children>
                         <!--  快捷搜索  -->
-                        <TextArea prefHeight="46.0" prefWidth="158.0"/>
+                        <JFXTextArea prefHeight="40.0" prefWidth="160.0"/>
                         <!--  新建会话  -->
-                        <JFXButton text="+"/>
+                        <JFXButton text="+" prefHeight="40.0" prefWidth="40.0"/>
                     </children>
                 </HBox>
             </top>
             <!--  会话栏  -->
             <center>
-                <JFXListView fx:id="conversationJFXListView" prefHeight="300.0" prefWidth="213.0"
-                          BorderPane.alignment="CENTER" onMouseClicked="#handleSelectConversation"/>
+                <JFXListView fx:id="conversationJFXListView" prefHeight="560.0" prefWidth="200" BorderPane.alignment="CENTER" onMouseClicked="#handleSelectConversation"/>
             </center>
         </BorderPane>
     </left>
@@ -34,11 +34,6 @@
             <center>
                 <!--  会话内容  -->
                 <ScrollPane fx:id="scrollPane" BorderPane.alignment="CENTER">
-                    <VBox fx:id="chatBox" spacing="5">
-                        <padding>
-                            <Insets bottom="10" left="10" right="10" top="10"/>
-                        </padding>
-                    </VBox>
                 </ScrollPane>
             </center>
             <bottom>
