@@ -87,4 +87,9 @@ public class AIChatController implements Initializable {
       Platform.runLater(() -> scrollPane.setContent(holdConversation.getChatBox()));
     }
   }
+
+  @FXML
+  public void handleClearConversation() {
+    holdConversation.clearChatMemory();
+  }
 }

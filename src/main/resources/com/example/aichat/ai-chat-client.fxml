@@ -1,31 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXListView?>
-<?import com.jfoenix.controls.JFXTextArea?>
-<?import javafx.geometry.Insets?>
+<?import com.jfoenix.controls.*?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.*?>
-<?import com.jfoenix.controls.JFXScrollPane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Menu?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
             prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.aichat.controller.AIChatController">
+    <top>
+        <MenuBar>
+            <menus>
+                <Menu text="会话">
+                    <items>
+                        <MenuItem onAction="#handleClearConversation" text="清空"/>
+                        <MenuItem text="新建"/>
+                        <MenuItem text="导入"/>
+                        <MenuItem text="导出"/>
+                    </items>
+                </Menu>
+                <Menu text="聊天">
+                    <items>
+                        <MenuItem text="导出记录"/>
+                    </items>
+                </Menu>
+                <Menu text="帮助">
+                    <items>
+                        <MenuItem text="关于"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
     <left>
-        <BorderPane prefHeight="600.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <top>
-                <HBox prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <!--  快捷搜索  -->
-                        <JFXTextArea prefHeight="40.0" prefWidth="160.0"/>
-                        <!--  新建会话  -->
-                        <JFXButton text="+" prefHeight="40.0" prefWidth="40.0"/>
-                    </children>
-                </HBox>
-            </top>
+        <BorderPane prefWidth="200.0" BorderPane.alignment="CENTER">
             <!--  会话栏  -->
             <center>
-                <JFXListView fx:id="conversationJFXListView" prefHeight="560.0" prefWidth="200" BorderPane.alignment="CENTER" onMouseClicked="#handleSelectConversation"/>
+                <JFXListView fx:id="conversationJFXListView" prefWidth="200"
+                             BorderPane.alignment="CENTER" onMouseClicked="#handleSelectConversation"/>
             </center>
         </BorderPane>
     </left>

@@ -8,7 +8,7 @@ public class ConversationLabel extends Label {
   public ConversationLabel(String conversationId, String text) {
     super(text);
     this.conversationId = conversationId;
-    this.setPrefHeight(60);
+    this.setPrefHeight(50);
   }
 
   public String getConversationId() {
