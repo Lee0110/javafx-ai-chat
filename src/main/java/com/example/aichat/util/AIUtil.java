@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.image.ImageModel;
+import org.springframework.ai.image.ImagePrompt;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -15,14 +17,17 @@ import java.math.RoundingMode;
 import java.util.*;
 
 @Component
-public class ChatUtil implements BeanFactoryAware {
-  private static final Logger log = LoggerFactory.getLogger(ChatUtil.class);
+public class AIUtil implements BeanFactoryAware {
+  private static final Logger log = LoggerFactory.getLogger(AIUtil.class);
 
   private static ChatClient chatClient;
+
+  private static ImageModel imageModel;
 
   @Override
   public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
     chatClient = beanFactory.getBean(ChatClient.class);
+    imageModel = beanFactory.getBean(ImageModel.class);
   }
 
   public static String chat(String systemPrompt, List<Message> messages) {
@@ -48,5 +53,9 @@ public class ChatUtil implements BeanFactoryAware {
       throw new RuntimeException(e);
     }
     return "模拟对话：" + UUID.randomUUID();
+  }
+
+  public static String image(String msg) {
+    return imageModel.call(new ImagePrompt(msg)).getResult().getOutput().getUrl();
   }
 }

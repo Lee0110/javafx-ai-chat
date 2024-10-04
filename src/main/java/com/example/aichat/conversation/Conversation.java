@@ -1,22 +1,14 @@
 package com.example.aichat.conversation;
 
 import com.example.aichat.component.ConversationLabel;
-import com.example.aichat.util.ChatUtil;
+import com.example.aichat.util.AIUtil;
 import com.example.aichat.util.FixedSizeQueue;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 
@@ -74,7 +66,7 @@ public class Conversation {
       chatMemory.add(new UserMessage(input));
       Platform.runLater(() -> this.chatBox.getChildren().add(getMessageHBox(input, Pos.BASELINE_RIGHT)));
       for (Robot robot : robotList) {
-        String reply = robot.getName() + "：" + ChatUtil.chat(robot.getSystemPrompt(), chatMemory.toList());
+        String reply = robot.getName() + "：" + AIUtil.chat(robot.getSystemPrompt(), chatMemory.toList());
         Platform.runLater(() -> this.chatBox.getChildren().add(getMessageHBox(reply, Pos.BASELINE_LEFT)));
         Platform.runLater(() -> {
           if (!conversationLabel.getText().startsWith("（新）")) {
