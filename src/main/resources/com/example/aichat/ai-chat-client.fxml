@@ -15,7 +15,7 @@
                 <Menu text="会话">
                     <items>
                         <MenuItem onAction="#handleClearConversation" text="清空"/>
-                        <MenuItem text="新建"/>
+                        <MenuItem onAction="#handleAddConversation" text="新建"/>
                         <MenuItem text="导入"/>
                         <MenuItem text="导出"/>
                     </items>

@@ -13,12 +13,13 @@ module com.example.aichat {
     requires com.jfoenix;
 
     // 向 javafx.fxml spring 模块开放
-    opens com.example.aichat to javafx.fxml, spring.core, spring.beans, spring.context;
-    opens com.example.aichat.controller to javafx.fxml, spring.core, spring.beans, spring.context;
-    opens com.example.aichat.config to javafx.fxml, spring.core, spring.beans, spring.context;
-    opens com.example.aichat.util to javafx.fxml, spring.core, spring.beans, spring.context;
-    opens com.example.aichat.conversation to javafx.fxml, spring.core, spring.beans, spring.context;
-    opens com.example.aichat.component to javafx.fxml, spring.core, spring.beans, spring.context;
+    opens com.example.aichat to javafx.fxml, spring.core, spring.beans, spring.context, com.jfoenix;
+    opens com.example.aichat.controller to javafx.fxml, spring.core, spring.beans, spring.context, com.jfoenix;
+    opens com.example.aichat.config to javafx.fxml, spring.core, spring.beans, spring.context, com.jfoenix;
+    opens com.example.aichat.util to javafx.fxml, spring.core, spring.beans, spring.context, com.jfoenix;
+    opens com.example.aichat.conversation to javafx.fxml, spring.core, spring.beans, spring.context, com.jfoenix;
+    opens com.example.aichat.component to javafx.fxml, spring.core, spring.beans, spring.context, com.jfoenix;
+    opens com.example.aichat.context to javafx.fxml, spring.core, spring.beans, spring.context, com.jfoenix;
 
     // 导出包
     exports com.example.aichat;

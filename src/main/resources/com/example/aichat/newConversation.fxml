@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="473.0" prefWidth="549.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.aichat.controller.NewConversationController">
+    <padding>
+        <Insets bottom="10" left="10" right="10" top="10" />
+    </padding>
+    <spacing>10</spacing>
+
+    <Label text="类型" />
+    <ChoiceBox fx:id="typeChoiceBox" prefHeight="26.0" prefWidth="491.0" />
+
+    <Label text="主题" />
+    <TextField fx:id="subjectTextField" />
+
+    <Separator prefWidth="200.0" />
+
+    <HBox>
+        <Label text="包含过去的消息：" />
+        <Label fx:id="sliderValueLabel" text="10" />
+    </HBox>
+
+    <Slider fx:id="chatMemorySlider" blockIncrement="1.0" majorTickUnit="1.0" max="20.0" showTickLabels="true" showTickMarks="true" value="10.0" />
+
+    <Separator prefWidth="200.0" />
+
+    <Button mnemonicParsing="false" onAction="#handleAddRobot" text="增加机器人" />
+    <ScrollPane fx:id="robotScrollPane" prefHeight="143.0" prefWidth="491.0">
+        <VBox fx:id="robotListVBox" />
+    </ScrollPane>
+
+    <Separator prefWidth="200.0" />
+    <HBox alignment="BASELINE_RIGHT">
+        <Button onAction="#handleConfirm" text="确定" />
+    </HBox>
+</VBox>
