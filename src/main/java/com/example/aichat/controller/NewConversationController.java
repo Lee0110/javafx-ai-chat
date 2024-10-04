@@ -91,5 +91,6 @@ public class NewConversationController {
     }
 
     Context.addNewConversation(chatMemorySize, robotList, subject);
+    robotScrollPane.getScene().getWindow().hide();
   }
 }
