@@ -1,8 +1,10 @@
 package com.example.aichat.context;
 
 import com.example.aichat.component.ConversationLabel;
-import com.example.aichat.conversation.Conversation;
-import com.example.aichat.conversation.Robot;
+import com.example.aichat.conversation.ChatConversation;
+import com.example.aichat.conversation.IConversation;
+import com.example.aichat.conversation.ChatRobot;
+import com.example.aichat.conversation.IRobot;
 import com.jfoenix.controls.JFXListView;
 import javafx.application.Platform;
 import javafx.scene.control.ScrollPane;
@@ -17,12 +19,12 @@ public class Context {
   /**
    * key: 会话id value: 会话
    */
-  private static final Map<String, Conversation> conversationMap = new ConcurrentHashMap<>();
+  private static final Map<String, IConversation> conversationMap = new ConcurrentHashMap<>();
 
   /**
    * 当前会话
    */
-  private static Conversation holdConversation;
+  private static IConversation holdChatConversation;
 
   private static ScrollPane scrollPane;
 
@@ -39,27 +41,27 @@ public class Context {
     }
   }
 
-  public static void addNewConversation(Conversation conversation) {
+  public static void addNewConversation(IConversation conversation) {
     conversationMap.put(conversation.getId(), conversation);
     conversationJFXListView.getItems().addAll(conversation.getConversationLabel());
     conversationJFXListView.getSelectionModel().select(conversationJFXListView.getItems().size() - 1);
     setHoldConversation(conversation);
   }
 
-  public static void addNewConversation(int chatMemorySize, List<Robot> robotList, String subject) {
-    addNewConversation(new Conversation(chatMemorySize, robotList, subject));
+  public static void addNewConversation(int chatMemorySize, List<IRobot> robotList, String subject) {
+    addNewConversation(new ChatConversation(chatMemorySize, robotList, subject));
   }
 
-  public static void setHoldConversation(Conversation conversation) {
-    holdConversation = conversation;
-    Platform.runLater(() -> scrollPane.setContent(holdConversation.getChatBox()));
+  public static void setHoldConversation(IConversation conversation) {
+    holdChatConversation = conversation;
+    Platform.runLater(() -> scrollPane.setContent(holdChatConversation.getChatBox()));
   }
 
-  public static Conversation getHoldConversation() {
-    return holdConversation;
+  public static IConversation getHoldConversation() {
+    return holdChatConversation;
   }
 
-  public static void putConversation(String id, Conversation conversation) {
+  public static void putConversation(String id, IConversation conversation) {
     conversationMap.put(id, conversation);
   }
 
@@ -71,7 +73,7 @@ public class Context {
     }
   }
 
-  public static void clearCurrentChatMemory() {
-    holdConversation.clearChatMemory();
+  public static void clear() {
+    holdChatConversation.clear();
   }
 }

@@ -2,8 +2,10 @@ package com.example.aichat.controller;
 
 import com.example.aichat.component.ConversationLabel;
 import com.example.aichat.context.Context;
-import com.example.aichat.conversation.Conversation;
-import com.example.aichat.conversation.Robot;
+import com.example.aichat.conversation.ChatConversation;
+import com.example.aichat.conversation.ChatRobot;
+import com.example.aichat.conversation.ImageConversation;
+import com.example.aichat.conversation.ImageRobot;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextArea;
@@ -51,17 +53,21 @@ public class AIChatController implements Initializable {
     Context.init(conversationJFXListView, scrollPane);
 
     // 官方预置的对话
-    Robot robot1 = new Robot("java助手-派蒙", "你是一名十年经验java工程师。你擅长给用户解决各种编程相关的问题。你解决问题的风格通常是先给出解决的思路，再由用户发出继续的命令后，然后一步一步解决问题。同时你的说话风格是一名二次元美少女，喜欢用颜文字来表达自己的情绪，你要扮演游戏原神里的派蒙，以派蒙这个名字来回答问题。", 0);
-    Conversation conversation = new Conversation(20, List.of(robot1), "java问题解答");
-    Context.putConversation(conversation.getId(), conversation);
-    Context.setHoldConversation(conversation);
+    ChatRobot chatRobot1 = new ChatRobot("java助手-派蒙", "你是一名十年经验java工程师。你擅长给用户解决各种编程相关的问题。你解决问题的风格通常是先给出解决的思路，再由用户发出继续的命令后，然后一步一步解决问题。同时你的说话风格是一名二次元美少女，喜欢用颜文字来表达自己的情绪，你要扮演游戏原神里的派蒙，以派蒙这个名字来回答问题。", 1);
+    ChatConversation chatConversation = new ChatConversation(20, List.of(chatRobot1), "java问题解答");
+    Context.putConversation(chatConversation.getId(), chatConversation);
+    Context.setHoldConversation(chatConversation);
 
-    Robot robot3 = new Robot("铃音-决策者", "你的名字叫铃音，你是一名二次元御姐。你的风格是严肃、敏锐、官方。你现在正在一个聊天室中，聊天室里，用户会首先提问，然后其余人挨个解答。你是除用户外第一个发言的人，你担任的角色是决策者，对于用户的问题，你不会直接给出答案，而是用非常简洁的语言给出一个解决问题的大纲或者解决问题的步骤或者解决思路即可。你在发言的时候会首先介绍自己叫铃音，是第一个发言的人。", 0);
-    Robot robot4 = new Robot("雪乃-执行者", "你的名字叫雪乃，你是一名二次元美少女。你的风格是活泼、可爱、俏皮。你现在正在一个聊天室中，聊天室里，用户会首先提问，然后其余人挨个解答。你是除用户外第二个发言的人，你担任的角色是执行者。用户提问，然后第一个发言的人是决策者，你需要综合之前用户提问和决策者提出的方案，来进行具体的执行。你在发言的时候会首先介绍自己叫雪乃，是第二个发言的人。", 1);
-    Conversation conversation2 = new Conversation(20, Arrays.asList(robot3, robot4), "脑洞大开会议室");
-    Context.putConversation(conversation2.getId(), conversation2);
+    ChatRobot chatRobot3 = new ChatRobot("铃音-决策者", "你的名字叫铃音，你是一名二次元御姐。你的风格是严肃、敏锐、官方。你担任的角色是决策者，对于用户的问题，你不会直接给出答案，而是用非常简洁的语言给出一个解决问题的大纲或者解决问题的步骤或者解决思路即可。", 1);
+    ChatRobot chatRobot4 = new ChatRobot("雪乃-执行者", "你的名字叫雪乃，你是一名二次元美少女。你的风格是活泼、可爱、俏皮。你担任的角色是执行者。用户提问，然后第一个发言的人是决策者，你需要综合之前用户提问和决策者提出的方案，来进行具体的执行。", 2);
+    ChatConversation chatConversation2 = new ChatConversation(20, Arrays.asList(chatRobot3, chatRobot4), "脑洞大开会议室");
+    Context.putConversation(chatConversation2.getId(), chatConversation2);
 
-    conversationJFXListView.getItems().addAll(conversation.getConversationLabel(), conversation2.getConversationLabel());
+    ImageRobot imageRobot = new ImageRobot();
+    ImageConversation imageConversation = new ImageConversation("文生图", List.of(imageRobot));
+    Context.putConversation(imageConversation.getId(), imageConversation);
+
+    conversationJFXListView.getItems().addAll(chatConversation.getConversationLabel(), chatConversation2.getConversationLabel(), imageConversation.getConversationLabel());
     conversationJFXListView.getSelectionModel().select(0);
     handleSelectConversation();
   }
@@ -86,7 +92,7 @@ public class AIChatController implements Initializable {
 
   @FXML
   public void handleClearConversation() {
-    Context.clearCurrentChatMemory();
+    Context.clear();
   }
 
   @FXML
@@ -100,7 +106,7 @@ public class AIChatController implements Initializable {
       stage.initModality(Modality.APPLICATION_MODAL);
       stage.showAndWait();
     } catch (IOException e) {
-      e.printStackTrace();
+      log.error("Failed to open new conversation dialog", e);
     }
   }
 }

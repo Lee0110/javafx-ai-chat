@@ -17,7 +17,7 @@ public class FixedSizeQueue<E> {
   public void add(E element) {
     synchronized (queue) {
       if (queue.size() == maxSize) {
-        queue.remove(0);
+        queue.removeFirst();
       }
       queue.add(element);
     }

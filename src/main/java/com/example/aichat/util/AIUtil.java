@@ -56,6 +56,8 @@ public class AIUtil implements BeanFactoryAware {
   }
 
   public static String image(String msg) {
-    return imageModel.call(new ImagePrompt(msg)).getResult().getOutput().getUrl();
+    String url = imageModel.call(new ImagePrompt(msg)).getResult().getOutput().getUrl();
+    log.info("生成图片的url：{}", url);
+    return url;
   }
 }

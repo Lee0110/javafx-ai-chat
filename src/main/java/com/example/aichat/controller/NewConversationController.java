@@ -1,7 +1,8 @@
 package com.example.aichat.controller;
 
 import com.example.aichat.context.Context;
-import com.example.aichat.conversation.Robot;
+import com.example.aichat.conversation.ChatRobot;
+import com.example.aichat.conversation.IRobot;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -32,7 +33,7 @@ public class NewConversationController {
 
   private int order = 0;
 
-  private final List<Robot> robotList = new ArrayList<>();
+  private final List<IRobot> chatRobotList = new ArrayList<>();
 
   @FXML
   public void initialize() {
@@ -72,7 +73,7 @@ public class NewConversationController {
     int chatMemorySize = (int) chatMemorySlider.getValue();
 
     // 获取机器人列表
-    robotList.clear();
+    chatRobotList.clear();
     for (int i = 1; i < robotListVBox.getChildren().size(); i++) {
       HBox robotBox = (HBox) robotListVBox.getChildren().get(i);
       TextField nameField = (TextField) robotBox.getChildren().get(0);
@@ -83,14 +84,14 @@ public class NewConversationController {
       String systemPrompt = systemPromptField.getText();
       int order = Integer.parseInt(orderField.getText());
 
-      Robot robot = new Robot(name, systemPrompt, order);
-      robotList.add(robot);
+      ChatRobot chatRobot = new ChatRobot(name, systemPrompt, order);
+      chatRobotList.add(chatRobot);
 
       robotScrollPane.layout();
       robotScrollPane.setVvalue(1.0);
     }
 
-    Context.addNewConversation(chatMemorySize, robotList, subject);
+    Context.addNewConversation(chatMemorySize, chatRobotList, subject);
     robotScrollPane.getScene().getWindow().hide();
   }
 }
