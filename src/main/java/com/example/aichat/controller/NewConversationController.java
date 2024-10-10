@@ -4,12 +4,15 @@ import com.example.aichat.context.Context;
 import com.example.aichat.conversation.ChatRobot;
 import com.example.aichat.conversation.IRobot;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NewConversationController {
 
@@ -32,8 +35,6 @@ public class NewConversationController {
   private VBox robotListVBox;
 
   private int order = 0;
-
-  private final List<IRobot> chatRobotList = new ArrayList<>();
 
   @FXML
   public void initialize() {
@@ -62,6 +63,9 @@ public class NewConversationController {
 
     VBox robotBox = new VBox(5, orderHBox, nameLabel, nameField, systemPromptLabel, systemPromptArea, separator);
     robotListVBox.getChildren().add(robotBox);
+
+    robotScrollPane.layout();
+    robotScrollPane.setVvalue(1.0);
   }
 
   @FXML
@@ -73,25 +77,20 @@ public class NewConversationController {
     int chatMemorySize = (int) chatMemorySlider.getValue();
 
     // 获取机器人列表
-    chatRobotList.clear();
-    for (int i = 1; i < robotListVBox.getChildren().size(); i++) {
-      HBox robotBox = (HBox) robotListVBox.getChildren().get(i);
-      TextField nameField = (TextField) robotBox.getChildren().get(0);
-      TextField systemPromptField = (TextField) robotBox.getChildren().get(1);
-      TextField orderField = (TextField) robotBox.getChildren().get(2);
-
+    List<IRobot> chatRobotList = robotListVBox.getChildren().stream().map(node -> {
+      VBox robotBox = (VBox) node;
+      HBox orderHbox = (HBox) robotBox.getChildren().get(0);
+      Label orderLabel = (Label) orderHbox.getChildren().get(1);
+      TextField nameField = (TextField) robotBox.getChildren().get(2);
+      TextArea systemPromptTextArea = (TextArea) robotBox.getChildren().get(4);
       String name = nameField.getText();
-      String systemPrompt = systemPromptField.getText();
-      int order = Integer.parseInt(orderField.getText());
-
-      ChatRobot chatRobot = new ChatRobot(name, systemPrompt, order);
-      chatRobotList.add(chatRobot);
-
-      robotScrollPane.layout();
-      robotScrollPane.setVvalue(1.0);
-    }
+      String systemPrompt = systemPromptTextArea.getText();
+      int order = Integer.parseInt(orderLabel.getText());
+      return new ChatRobot(name, systemPrompt, order);
+    }).sorted(Comparator.comparingInt(IRobot::getOrder)).collect(Collectors.toList());
 
     Context.addNewConversation(chatMemorySize, chatRobotList, subject);
     robotScrollPane.getScene().getWindow().hide();
   }
+
 }

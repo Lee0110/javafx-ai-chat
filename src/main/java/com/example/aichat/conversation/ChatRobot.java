@@ -37,6 +37,11 @@ public class ChatRobot implements IRobot {
   }
 
   @Override
+  public int getOrder() {
+    return order;
+  }
+
+  @Override
   public RobotGenerateResponse generate(String input, FixedSizeQueue<Message> chatMemory) {
     String reply = name + "：" + AIUtil.chat(getSystemPrompt(), chatMemory.toList());
     HBox messageBox = new HBox();

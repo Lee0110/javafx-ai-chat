@@ -37,4 +37,9 @@ public class ImageRobot implements IRobot {
 
     return new RobotGenerateResponse(messageBox);
   }
+
+  @Override
+  public int getOrder() {
+    return 0;
+  }
 }
