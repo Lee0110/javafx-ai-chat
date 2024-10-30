@@ -6,6 +6,11 @@ import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.springframework.ai.chat.messages.Message;
@@ -119,13 +124,30 @@ public abstract class BaseConversation implements IConversation {
     messageBox.setSpacing(10);
 
     // 消息内容
-    JFXTextArea messageTextArea = new JFXTextArea(message);
-    messageTextArea.setWrapText(true);
-    messageTextArea.setEditable(false);
-    messageTextArea.setPrefRowCount(message.split("\n").length);
-    messageTextArea.setStyle("-fx-background-color: rgba(255, 255, 255, 0.4); -fx-padding: 10; -fx-background-radius: 10;");
-    messageTextArea.textProperty().addListener((observable, oldValue, newValue) -> messageTextArea.setPrefRowCount(newValue.split("\n").length));
-    messageBox.getChildren().add(messageTextArea);
+    Label label = new Label(message);
+    label.setWrapText(true);
+    label.setStyle("-fx-background-color: rgba(255, 255, 255, 0.4); -fx-padding: 10; -fx-background-radius: 10;");
+
+    // 创建右键菜单
+    ContextMenu contextMenu = new ContextMenu();
+
+    // 创建复制菜单项
+    MenuItem copyItem = new MenuItem("复制");
+
+    // 设置复制功能
+    copyItem.setOnAction(event -> {
+      Clipboard clipboard = Clipboard.getSystemClipboard();
+      ClipboardContent content = new ClipboardContent();
+      content.putString(message); // 将消息内容放入剪切板
+      clipboard.setContent(content);
+    });
+
+    // 将复制菜单项添加到右键菜单
+    contextMenu.getItems().add(copyItem);
+
+    // 为label设置右键菜单
+    label.setContextMenu(contextMenu);
+    messageBox.getChildren().add(label);
     return messageBox;
   }
 }

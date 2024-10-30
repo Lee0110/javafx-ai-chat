@@ -4,6 +4,11 @@ import com.example.aichat.util.AIUtil;
 import com.example.aichat.util.FixedSizeQueue;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.geometry.Pos;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import org.springframework.ai.chat.messages.Message;
 
@@ -49,14 +54,31 @@ public class ChatRobot implements IRobot {
     messageBox.setSpacing(10);
 
     // 消息内容
-    JFXTextArea messageTextArea = new JFXTextArea(reply);
-    messageTextArea.setWrapText(true);
-    messageTextArea.setEditable(false);
-    messageTextArea.setPrefRowCount(reply.split("\n").length);
-    messageTextArea.setStyle("-fx-background-color: rgba(190, 250, 250, 0.6); -fx-padding: 10; -fx-background-radius: 10;");
+    Label label = new Label(reply);
+    label.setWrapText(true);
+    label.setStyle("-fx-background-color: rgba(190, 250, 250, 0.6); -fx-padding: 10; -fx-background-radius: 10;");
 
-    messageTextArea.textProperty().addListener((observable, oldValue, newValue) -> messageTextArea.setPrefRowCount(newValue.split("\n").length));
-    messageBox.getChildren().add(messageTextArea);
+    // 创建右键菜单
+    ContextMenu contextMenu = new ContextMenu();
+
+    // 创建复制菜单项
+    MenuItem copyItem = new MenuItem("复制");
+
+    // 设置复制功能
+    copyItem.setOnAction(event -> {
+      Clipboard clipboard = Clipboard.getSystemClipboard();
+      ClipboardContent content = new ClipboardContent();
+      content.putString(reply); // 将消息内容放入剪切板
+      clipboard.setContent(content);
+    });
+
+    // 将复制菜单项添加到右键菜单
+    contextMenu.getItems().add(copyItem);
+
+    // 为label设置右键菜单
+    label.setContextMenu(contextMenu);
+
+    messageBox.getChildren().add(label);
     return new RobotGenerateResponse(reply, messageBox);
   }
 }
