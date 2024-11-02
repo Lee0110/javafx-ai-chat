@@ -2,13 +2,13 @@ package com.example.aichat.conversation;
 
 import com.example.aichat.component.ConversationLabel;
 import com.example.aichat.util.FixedSizeQueue;
-import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
@@ -65,8 +65,7 @@ public abstract class BaseConversation implements IConversation {
   }
 
   private void configureChatBox() {
-    chatBox.setPrefHeight(400);
-    chatBox.setPrefWidth(590);
+    chatBox.setPrefWidth(580);
     chatBox.setSpacing(5);
     chatBox.setPadding(new Insets(10, 10, 10, 10));
   }
@@ -78,7 +77,7 @@ public abstract class BaseConversation implements IConversation {
       Platform.runLater(() -> chatBox.getChildren().add(getMessageHBox(input)));
       for (IRobot robot : robotList) {
         RobotGenerateResponse response = robot.generate(input, chatMemory);
-        Platform.runLater(() -> chatBox.getChildren().add(response.getHBox()));
+        Platform.runLater(() -> chatBox.getChildren().add(response.getNode()));
         Platform.runLater(() -> {
           if (!conversationLabel.getText().startsWith("（新）")) {
             this.conversationLabel.setText("（新）" + conversationLabel.getText());
@@ -124,30 +123,36 @@ public abstract class BaseConversation implements IConversation {
     messageBox.setSpacing(10);
 
     // 消息内容
-    Label label = new Label(message);
-    label.setWrapText(true);
-    label.setStyle("-fx-background-color: rgba(255, 255, 255, 0.4); -fx-padding: 10; -fx-background-radius: 10;");
+    TextArea textArea = new TextArea(message);
+    textArea.setWrapText(true);
+    textArea.setEditable(false); // 设置为不可编辑
+    textArea.setStyle("-fx-background-color: rgba(255, 255, 255, 0.4); -fx-padding: 10; -fx-background-radius: 10;");
 
-    // 创建右键菜单
-    ContextMenu contextMenu = new ContextMenu();
+    // 设置 TextArea 的宽度和高度
+    textArea.setPrefWidth(500);
+    // 动态调整 TextArea 的高度
+    textArea.setPrefRowCount(calculateRowCount(textArea, message));
 
-    // 创建复制菜单项
-    MenuItem copyItem = new MenuItem("复制");
-
-    // 设置复制功能
-    copyItem.setOnAction(event -> {
-      Clipboard clipboard = Clipboard.getSystemClipboard();
-      ClipboardContent content = new ClipboardContent();
-      content.putString(message); // 将消息内容放入剪切板
-      clipboard.setContent(content);
-    });
-
-    // 将复制菜单项添加到右键菜单
-    contextMenu.getItems().add(copyItem);
-
-    // 为label设置右键菜单
-    label.setContextMenu(contextMenu);
-    messageBox.getChildren().add(label);
+    messageBox.getChildren().add(textArea);
     return messageBox;
+  }
+
+  private int calculateRowCount(TextArea textArea, String text) {
+    int rowCount = 1;
+    int wrapWidth = (int) textArea.getPrefWidth();
+    int textWidth = (int) calculateTextWidth(textArea, text);
+
+    if (textWidth > wrapWidth) {
+      rowCount = (int) Math.ceil((double) textWidth / wrapWidth);
+    }
+
+    return rowCount;
+  }
+
+  private double calculateTextWidth(TextArea textArea, String text) {
+    // 这里可以使用 Text 组件来计算文本的宽度
+    javafx.scene.text.Text tempText = new javafx.scene.text.Text(text);
+    tempText.setFont(textArea.getFont());
+    return tempText.getLayoutBounds().getWidth();
   }
 }

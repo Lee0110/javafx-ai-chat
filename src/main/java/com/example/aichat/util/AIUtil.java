@@ -43,13 +43,17 @@ public class AIUtil implements BeanFactoryAware {
     return reply;
   }
 
-  public static String mockChat(String input, String systemPrompt, List<Message> messages) {
+  public static String mockChat(String systemPrompt, List<Message> messages) {
     try {
       Thread.sleep(3000);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
-    return "模拟对话：" + UUID.randomUUID();
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 100; i++) {
+      sb.append("模拟对话：").append(UUID.randomUUID());
+    }
+    return "模拟对话：" + UUID.randomUUID() + "\n" + sb.toString();
   }
 
   public static String image(String msg) {

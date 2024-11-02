@@ -1,27 +1,27 @@
 package com.example.aichat.conversation;
 
-import javafx.scene.layout.HBox;
+import javafx.scene.Node;
 
 public class RobotGenerateResponse {
   private final String reply;
 
-  private final HBox hBox;
+  private final Node node;
 
-  public RobotGenerateResponse(String reply, HBox hBox) {
+  public RobotGenerateResponse(String reply, Node node) {
     this.reply = reply;
-    this.hBox = hBox;
+    this.node = node;
   }
 
-  public RobotGenerateResponse(HBox messageBox) {
+  public RobotGenerateResponse(Node node) {
     this.reply = null;
-    this.hBox = messageBox;
+    this.node = node;
   }
 
   public String getReply() {
     return reply;
   }
 
-  public HBox getHBox() {
-    return hBox;
+  public Node getNode() {
+    return node;
   }
 }

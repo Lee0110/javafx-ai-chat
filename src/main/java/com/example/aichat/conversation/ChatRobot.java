@@ -7,9 +7,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.text.Text;
 import org.springframework.ai.chat.messages.Message;
 
 public class ChatRobot implements IRobot {
@@ -48,37 +51,42 @@ public class ChatRobot implements IRobot {
 
   @Override
   public RobotGenerateResponse generate(String input, FixedSizeQueue<Message> chatMemory) {
-    String reply = name + "：" + AIUtil.chat(getSystemPrompt(), chatMemory.toList());
+    String reply = name + "：" + AIUtil.mockChat(getSystemPrompt(), chatMemory.toList());
     HBox messageBox = new HBox();
     messageBox.setAlignment(Pos.BASELINE_LEFT);
     messageBox.setSpacing(10);
 
     // 消息内容
-    Label label = new Label(reply);
-    label.setWrapText(true);
-    label.setStyle("-fx-background-color: rgba(190, 250, 250, 0.6); -fx-padding: 10; -fx-background-radius: 10;");
+    TextArea textArea = new TextArea(reply);
+    textArea.setWrapText(true);
+    textArea.setEditable(false); // 设置为不可编辑
+    textArea.setStyle("-fx-background-color: rgba(190, 250, 250, 0.6); -fx-padding: 10; -fx-background-radius: 10;");
 
-    // 创建右键菜单
-    ContextMenu contextMenu = new ContextMenu();
+    // 设置 TextArea 的宽度和高度
+    textArea.setPrefWidth(500);
+    // 动态调整 TextArea 的高度
+    textArea.setPrefRowCount(calculateRowCount(textArea, reply));
 
-    // 创建复制菜单项
-    MenuItem copyItem = new MenuItem("复制");
-
-    // 设置复制功能
-    copyItem.setOnAction(event -> {
-      Clipboard clipboard = Clipboard.getSystemClipboard();
-      ClipboardContent content = new ClipboardContent();
-      content.putString(reply); // 将消息内容放入剪切板
-      clipboard.setContent(content);
-    });
-
-    // 将复制菜单项添加到右键菜单
-    contextMenu.getItems().add(copyItem);
-
-    // 为label设置右键菜单
-    label.setContextMenu(contextMenu);
-
-    messageBox.getChildren().add(label);
+    messageBox.getChildren().add(textArea);
     return new RobotGenerateResponse(reply, messageBox);
+  }
+
+  private int calculateRowCount(TextArea textArea, String text) {
+    int rowCount = 1;
+    int wrapWidth = (int) textArea.getPrefWidth();
+    int textWidth = (int) calculateTextWidth(textArea, text);
+
+    if (textWidth > wrapWidth) {
+      rowCount = (int) Math.ceil((double) textWidth / wrapWidth);
+    }
+
+    return rowCount;
+  }
+
+  private double calculateTextWidth(TextArea textArea, String text) {
+    // 这里可以使用 Text 组件来计算文本的宽度
+    javafx.scene.text.Text tempText = new javafx.scene.text.Text(text);
+    tempText.setFont(textArea.getFont());
+    return tempText.getLayoutBounds().getWidth();
   }
 }
