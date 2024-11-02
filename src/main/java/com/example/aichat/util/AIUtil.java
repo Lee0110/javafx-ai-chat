@@ -22,12 +22,9 @@ public class AIUtil implements BeanFactoryAware {
 
   private static ChatClient chatClient;
 
-  private static ImageModel imageModel;
-
   @Override
   public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
     chatClient = beanFactory.getBean(ChatClient.class);
-    imageModel = beanFactory.getBean(ImageModel.class);
   }
 
   public static String chat(String systemPrompt, List<Message> messages) {
@@ -56,8 +53,6 @@ public class AIUtil implements BeanFactoryAware {
   }
 
   public static String image(String msg) {
-    String url = imageModel.call(new ImagePrompt(msg)).getResult().getOutput().getUrl();
-    log.info("生成图片的url：{}", url);
-    return url;
+    throw new RuntimeException("Not implemented");
   }
 }
