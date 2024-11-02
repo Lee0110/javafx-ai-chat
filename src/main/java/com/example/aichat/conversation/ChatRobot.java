@@ -1,6 +1,7 @@
 package com.example.aichat.conversation;
 
 import com.example.aichat.util.AIUtil;
+import com.example.aichat.util.CommonUtil;
 import com.example.aichat.util.FixedSizeQueue;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.geometry.Pos;
@@ -65,28 +66,11 @@ public class ChatRobot implements IRobot {
     // 设置 TextArea 的宽度和高度
     textArea.setPrefWidth(500);
     // 动态调整 TextArea 的高度
-    textArea.setPrefRowCount(calculateRowCount(textArea, reply));
+    textArea.setPrefRowCount(CommonUtil.calculateRowCount(textArea, reply));
 
     messageBox.getChildren().add(textArea);
     return new RobotGenerateResponse(reply, messageBox);
   }
 
-  private int calculateRowCount(TextArea textArea, String text) {
-    int rowCount = 1;
-    int wrapWidth = (int) textArea.getPrefWidth();
-    int textWidth = (int) calculateTextWidth(textArea, text);
 
-    if (textWidth > wrapWidth) {
-      rowCount = (int) Math.ceil((double) textWidth / wrapWidth);
-    }
-
-    return rowCount;
-  }
-
-  private double calculateTextWidth(TextArea textArea, String text) {
-    // 这里可以使用 Text 组件来计算文本的宽度
-    javafx.scene.text.Text tempText = new javafx.scene.text.Text(text);
-    tempText.setFont(textArea.getFont());
-    return tempText.getLayoutBounds().getWidth();
-  }
 }
