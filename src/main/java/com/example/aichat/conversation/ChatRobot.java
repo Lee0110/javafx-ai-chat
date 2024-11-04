@@ -3,12 +3,19 @@ package com.example.aichat.conversation;
 import com.example.aichat.util.AIUtil;
 import com.example.aichat.util.CommonUtil;
 import com.example.aichat.util.FixedSizeQueue;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.messages.Message;
+import reactor.core.publisher.Flux;
 
 public class ChatRobot implements IRobot {
+
+  private static final Logger log = LoggerFactory.getLogger(ChatRobot.class);
+
   private String id;
 
   private final String name;
@@ -44,22 +51,32 @@ public class ChatRobot implements IRobot {
 
   @Override
   public RobotGenerateResponse generate(String input, FixedSizeQueue<Message> chatMemory) {
-    String reply = name + "：" + AIUtil.chat(getSystemPrompt(), chatMemory.toList());
+    Flux<String> fluxReply = AIUtil.streamChat(getSystemPrompt(), chatMemory.toList());
     HBox messageBox = new HBox();
     messageBox.setAlignment(Pos.BASELINE_LEFT);
     messageBox.setSpacing(10);
 
     // 消息内容
-    TextArea textArea = new TextArea(reply);
+    TextArea textArea = new TextArea();
     textArea.setWrapText(true);
     textArea.setEditable(false); // 设置为不可编辑
     textArea.setStyle("-fx-background-color: rgba(190, 250, 250, 0.6); -fx-padding: 10; -fx-background-radius: 10;");
 
     // 设置 TextArea 的宽度和高度
     textArea.setPrefWidth(500);
-    textArea.setPrefHeight(CommonUtil.calculateHeight(reply, 300));
+    textArea.setPrefHeight(300); // 假设初始高度为300
+
+    // 订阅 Flux 并更新 TextArea
+    fluxReply.subscribe(
+        reply -> Platform.runLater(() -> textArea.appendText(reply)),
+        error -> {
+          log.error("Error occurred", error);
+          Platform.runLater(() -> textArea.appendText("糟糕，对话出错了！"));
+        },
+        () -> System.out.println("Stream completed")
+    );
 
     messageBox.getChildren().add(textArea);
-    return new RobotGenerateResponse(reply, messageBox);
+    return new RobotGenerateResponse(textArea.getText(), messageBox);
   }
 }

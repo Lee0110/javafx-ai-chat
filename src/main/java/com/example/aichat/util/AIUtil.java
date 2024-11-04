@@ -11,6 +11,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,6 +42,15 @@ public class AIUtil implements BeanFactoryAware {
       reply = "对话出错，请稍后再试";
     }
     return reply;
+  }
+
+  public static Flux<String> streamChat(String systemPrompt, List<Message> messages) {
+    try {
+      return chatClient.prompt().user(messages.removeLast().getContent()).system(systemPrompt).messages(messages).stream().content();
+    } catch (Exception e) {
+      log.error("对话出错", e);
+      return Flux.just("对话出错，请稍后再试");
+    }
   }
 
   public static String mockChat(String systemPrompt, List<Message> messages) {

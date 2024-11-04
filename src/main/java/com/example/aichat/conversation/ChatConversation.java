@@ -1,5 +1,6 @@
 package com.example.aichat.conversation;
 
+import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 
 import java.util.*;
@@ -16,7 +17,7 @@ public class ChatConversation extends BaseConversation {
 
   @Override
   protected void doPostAddMemory(String reply) {
-    chatMemory.add(new UserMessage(reply));
+    chatMemory.add(new AssistantMessage(reply));
   }
 
   public void export() {
