@@ -45,7 +45,7 @@ public class AIUtil implements BeanFactoryAware {
 
   public static String mockChat(String systemPrompt, List<Message> messages) {
     try {
-      Thread.sleep(3000);
+      Thread.sleep(0);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }

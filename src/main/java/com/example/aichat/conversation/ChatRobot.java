@@ -3,17 +3,9 @@ package com.example.aichat.conversation;
 import com.example.aichat.util.AIUtil;
 import com.example.aichat.util.CommonUtil;
 import com.example.aichat.util.FixedSizeQueue;
-import com.jfoenix.controls.JFXTextArea;
 import javafx.geometry.Pos;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.text.Text;
 import org.springframework.ai.chat.messages.Message;
 
 public class ChatRobot implements IRobot {
@@ -52,7 +44,7 @@ public class ChatRobot implements IRobot {
 
   @Override
   public RobotGenerateResponse generate(String input, FixedSizeQueue<Message> chatMemory) {
-    String reply = name + "：" + AIUtil.mockChat(getSystemPrompt(), chatMemory.toList());
+    String reply = name + "：" + AIUtil.chat(getSystemPrompt(), chatMemory.toList());
     HBox messageBox = new HBox();
     messageBox.setAlignment(Pos.BASELINE_LEFT);
     messageBox.setSpacing(10);
@@ -65,12 +57,9 @@ public class ChatRobot implements IRobot {
 
     // 设置 TextArea 的宽度和高度
     textArea.setPrefWidth(500);
-    // 动态调整 TextArea 的高度
-    textArea.setPrefRowCount(CommonUtil.calculateRowCount(textArea, reply));
+    textArea.setPrefHeight(CommonUtil.calculateHeight(reply, 300));
 
     messageBox.getChildren().add(textArea);
     return new RobotGenerateResponse(reply, messageBox);
   }
-
-
 }

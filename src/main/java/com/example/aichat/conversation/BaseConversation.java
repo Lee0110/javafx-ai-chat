@@ -6,12 +6,7 @@ import com.example.aichat.util.FixedSizeQueue;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.springframework.ai.chat.messages.Message;
@@ -131,8 +126,7 @@ public abstract class BaseConversation implements IConversation {
 
     // 设置 TextArea 的宽度和高度
     textArea.setPrefWidth(500);
-    // 动态调整 TextArea 的高度
-    textArea.setPrefRowCount(CommonUtil.calculateRowCount(textArea, message));
+    textArea.setPrefHeight(CommonUtil.calculateHeight(message, 300));
 
     messageBox.getChildren().add(textArea);
     return messageBox;
