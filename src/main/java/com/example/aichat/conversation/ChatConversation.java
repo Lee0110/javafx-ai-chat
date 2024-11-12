@@ -15,11 +15,6 @@ public class ChatConversation extends BaseConversation {
     chatMemory.add(new UserMessage(input));
   }
 
-  @Override
-  protected void doPostAddMemory(String reply) {
-    chatMemory.add(new AssistantMessage(reply));
-  }
-
   public void export() {
     // 将会话内容导出到markdown文件中
   }

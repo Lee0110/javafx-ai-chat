@@ -10,7 +10,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.springframework.ai.chat.messages.Message;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -79,16 +78,11 @@ public abstract class BaseConversation implements IConversation {
             this.conversationLabel.setText("（新）" + conversationLabel.getText());
           }
         });
-        if (StringUtils.hasText(response.getReply())) {
-          doPostAddMemory(response.getReply());
-        }
       }
     });
   }
 
   protected abstract void doPreAddMemory(String input);
-
-  protected abstract void doPostAddMemory(String reply);
 
   @Override
   public VBox getChatBox() {

@@ -13,11 +13,6 @@ public class ImageConversation extends BaseConversation{
   }
 
   @Override
-  protected void doPostAddMemory(String reply) {
-
-  }
-
-  @Override
   protected void doClearChatMemory() {
 
   }

@@ -9,6 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import reactor.core.publisher.Flux;
 
@@ -73,7 +74,7 @@ public class ChatRobot implements IRobot {
           log.error("Error occurred", error);
           Platform.runLater(() -> textArea.appendText("糟糕，对话出错了！"));
         },
-        () -> System.out.println("Stream completed")
+        () -> chatMemory.add(new AssistantMessage(textArea.getText()))
     );
 
     messageBox.getChildren().add(textArea);
