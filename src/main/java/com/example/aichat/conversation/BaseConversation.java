@@ -56,7 +56,7 @@ public abstract class BaseConversation implements IConversation {
     configureChatBox();
     this.conversationLabel = new ConversationLabel(id, subject);
     this.robotList = robotList;
-    this.chatMemory = new FixedSizeQueue<>(0);
+    this.chatMemory = new FixedSizeQueue<>(1);
   }
 
   private void configureChatBox() {

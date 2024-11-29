@@ -3,10 +3,10 @@ package com.example.aichat.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.image.ImageModel;
-import org.springframework.ai.image.ImagePrompt;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -28,13 +28,14 @@ public class AIUtil implements BeanFactoryAware {
     chatClient = beanFactory.getBean(ChatClient.class);
   }
 
-  public static String chat(String systemPrompt, List<Message> messages) {
+  public static String chat(String systemPrompt, FixedSizeQueue<Message> chatMemory) {
     long start = System.currentTimeMillis();
     String reply;
     try {
-      ChatResponse chatResponse = chatClient.prompt().user(messages.removeLast().getContent()).system(systemPrompt).messages(messages).call().chatResponse();
+      ChatResponse chatResponse = chatClient.prompt().user(chatMemory.getLast().getContent()).system(systemPrompt).messages(chatMemory.toList()).call().chatResponse();
       log.info("对话结束，详细信息：{}", chatResponse);
       BigDecimal time = new BigDecimal(System.currentTimeMillis() - start).divide(new BigDecimal(1000), 1, RoundingMode.HALF_UP);
+      chatMemory.add(chatResponse.getResult().getOutput());
       reply = chatResponse.getResult().getOutput().getContent() + "\n" + "生成耗时：" + time + "秒";
       log.info("对话生成完毕，耗时：{}秒", time);
     } catch (Exception e) {
@@ -44,16 +45,16 @@ public class AIUtil implements BeanFactoryAware {
     return reply;
   }
 
-  public static Flux<String> streamChat(String systemPrompt, List<Message> messages) {
+  public static Flux<ChatResponse> streamChat(String systemPrompt, FixedSizeQueue<Message> chatMemory) {
     try {
-      return chatClient.prompt().user(messages.removeLast().getContent()).system(systemPrompt).messages(messages).stream().content();
+      return chatClient.prompt().user(chatMemory.getLast().getContent()).system(systemPrompt).messages(chatMemory.toList()).stream().chatResponse();
     } catch (Exception e) {
       log.error("对话出错", e);
-      return Flux.just("对话出错，请稍后再试");
+      return Flux.just(new ChatResponse(List.of(new Generation(new AssistantMessage("对话出错，请稍后再试")))));
     }
   }
 
-  public static String mockChat(String systemPrompt, List<Message> messages) {
+  public static String mockChat(String systemPrompt, FixedSizeQueue<Message> chatMemory) {
     try {
       Thread.sleep(0);
     } catch (InterruptedException e) {

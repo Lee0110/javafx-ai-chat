@@ -34,4 +34,13 @@ public class FixedSizeQueue<E> {
       return new ArrayList<>(queue);
     }
   }
+
+  public E getLast() {
+    synchronized (queue) {
+      if (queue.isEmpty()) {
+        return null;
+      }
+      return queue.getLast();
+    }
+  }
 }

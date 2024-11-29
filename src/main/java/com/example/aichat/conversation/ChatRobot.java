@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.model.ChatResponse;
 import reactor.core.publisher.Flux;
 
 public class ChatRobot implements IRobot {
@@ -52,7 +53,7 @@ public class ChatRobot implements IRobot {
 
   @Override
   public RobotGenerateResponse generate(String input, FixedSizeQueue<Message> chatMemory) {
-    Flux<String> fluxReply = AIUtil.streamChat(getSystemPrompt(), chatMemory.toList());
+    Flux<ChatResponse> fluxReply = AIUtil.streamChat(getSystemPrompt(), chatMemory);
     HBox messageBox = new HBox();
     messageBox.setAlignment(Pos.BASELINE_LEFT);
     messageBox.setSpacing(10);
@@ -69,7 +70,7 @@ public class ChatRobot implements IRobot {
 
     // 订阅 Flux 并更新 TextArea
     fluxReply.subscribe(
-        reply -> Platform.runLater(() -> textArea.appendText(reply)),
+        reply -> Platform.runLater(() -> textArea.appendText(reply.getResult().getOutput().getContent())),
         error -> {
           log.error("Error occurred", error);
           Platform.runLater(() -> textArea.appendText("糟糕，对话出错了！"));
