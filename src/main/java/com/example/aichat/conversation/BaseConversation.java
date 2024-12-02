@@ -9,6 +9,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.messages.Message;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public abstract class BaseConversation implements IConversation {
+  private static final Logger log = LoggerFactory.getLogger(BaseConversation.class);
   protected final String id;
 
   /**
@@ -69,6 +72,7 @@ public abstract class BaseConversation implements IConversation {
   public void chat(String input) {
     executorService.submit(() -> {
       doPreAddMemory(input);
+      log.info("用户输入：{}", input);
       Platform.runLater(() -> chatBox.getChildren().add(getMessageHBox(input)));
       for (IRobot robot : robotList) {
         RobotGenerateResponse response = robot.generate(input, chatMemory);

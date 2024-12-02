@@ -14,6 +14,8 @@ import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
 import reactor.core.publisher.Flux;
 
+import java.util.concurrent.CompletableFuture;
+
 public class ChatRobot implements IRobot {
 
   private static final Logger log = LoggerFactory.getLogger(ChatRobot.class);
@@ -66,16 +68,22 @@ public class ChatRobot implements IRobot {
 
     // 设置 TextArea 的宽度和高度
     textArea.setPrefWidth(500);
-    textArea.setPrefHeight(300); // 假设初始高度为300
+    textArea.setPrefHeight(10);
 
     // 订阅 Flux 并更新 TextArea
     fluxReply.subscribe(
-        reply -> Platform.runLater(() -> textArea.appendText(reply.getResult().getOutput().getContent())),
+        reply -> {
+          Platform.runLater(() -> textArea.appendText(reply.getResult().getOutput().getContent()));
+          textArea.setPrefHeight(CommonUtil.calculateHeight(textArea.getText(), 500));
+        },
         error -> {
           log.error("Error occurred", error);
           Platform.runLater(() -> textArea.appendText("糟糕，对话出错了！"));
         },
-        () -> chatMemory.add(new AssistantMessage(textArea.getText()))
+        () -> {
+          chatMemory.add(new AssistantMessage(textArea.getText()));
+          log.info("对话生成结果：{}", textArea.getText());
+        }
     );
 
     messageBox.getChildren().add(textArea);
